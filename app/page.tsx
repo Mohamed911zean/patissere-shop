@@ -18,7 +18,6 @@ export default function Home() {
       <LegacyStats />
       <WhyChooseUs />
       <BranchesCTA />
-      <HomeDynamicSections />
       <Footer />
     </div>
   );

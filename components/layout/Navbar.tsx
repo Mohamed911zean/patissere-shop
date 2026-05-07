@@ -233,7 +233,7 @@ export function Navbar() {
                     {['en', 'ar'].map((lang) => (
                       <button
                         key={lang}
-                        onClick={() => setLanguage(lang)}
+                        onClick={() => setLanguage(lang as 'en' | 'ar')}
                         className={cn(
                           "px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300",
                           currentLang === lang
