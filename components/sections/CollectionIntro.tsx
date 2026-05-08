@@ -295,7 +295,7 @@ export function CollectionIntro() {
 
                         {/* Mobile: arrow navigates to product page */}
                         <Link
-                          href={`/shop/${product.id}`}
+                          href={`/products/${product.id}`}
                           aria-label={isAr ? product.nameAr : product.nameEn}
                           className={cn(
                             'w-8 h-8 rounded-full shrink-0',
@@ -311,7 +311,7 @@ export function CollectionIntro() {
 
                         {/* Desktop arrow */}
                         <Link
-                          href={`/shop/${product.id}`}
+                          href={`/products/${product.id}`}
                           aria-label={isAr ? product.nameAr : product.nameEn}
                           className={cn(
                             'w-8 h-8 rounded-full shrink-0',

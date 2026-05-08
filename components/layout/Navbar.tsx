@@ -15,8 +15,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
-  { href: '/shop', label: 'The Bakery' },
-  { href: '/special-cakes', label: 'Signature Cakes' },
+  { href: '/shop', label: 'Shop' },
+  { href: '/special-cakes', label: 'Special Cakes' },
   { href: '/about', label: 'Our Story' },
   { href: '/branches', label: 'Locations' },
   { href: '/contact-us', label: 'Contact' },

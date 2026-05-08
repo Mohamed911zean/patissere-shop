@@ -1,58 +1,95 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Footer } from '@/components/layout/Footer';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Minus, Plus, ShoppingBag, Heart, ChevronDown, Truck, ShieldCheck, Clock } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import {
+  Minus, Plus, ShoppingBag, Heart, ChevronDown,
+  Truck, ShieldCheck, Clock, ArrowLeft, ArrowRight,
+  Share2, Star, ChevronRight
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+/* ─────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────── */
 const PRODUCT = {
-  name: "Millefeuille Ice Cream Cake",
-  category: "Ice Cream Cakes",
+  name: 'Four Seasons Cake',
+  subtitle: 'A French Classic, Reimagined',
+  category: 'Ice Cream Cakes',
   price: 550,
-  description: "A masterpiece of textures and temperatures. Layers of caramelized flaky puff pastry meet our signature creamy vanilla bean ice cream, topped with fresh forest berries. A refreshing twist on a French classic.",
-  images: [
-    "/cake/four-season.jpg",
-    "/cake/lotus.jpg",
-    "/cake/mango.jpg",
-    "/cake/nutella.jpg"
+  rating: 4.9,
+  reviewCount: 128,
+  description:
+    'Layers of caramelized flaky puff pastry meet our signature creamy vanilla bean ice cream, crowned with forest berries and a golden caramel veil. A temperature contrast that lingers long after the last bite.',
+  image: '/cake/four-season.jpg',
+  variants: [
+    { label: 'Small', sub: '4–6 persons', price: 550 },
+    { label: 'Medium', sub: '8–10 persons', price: 750 },
+    { label: 'Large', sub: '12–15 persons', price: 980 },
   ],
-  variants: ["Small (4-6 persons)", "Medium (8-10 persons)", "Large (12-15 persons)"],
   details: [
-    { title: "Product Description", content: "Our signature Millefeuille Ice Cream Cake is handcrafted daily using traditional French techniques. Each layer of puff pastry is meticulously caramelized to ensure a perfect crunch that contrasts beautifully with our smooth, artisanal ice cream." },
-    { title: "Ingredients & Allergens", content: "Ingredients: Wheat Flour, Butter, Milk, Cream, Vanilla Bean, Sugar, Eggs, Seasonal Berries. Allergens: Contains Gluten, Dairy, Eggs. May contain traces of nuts." },
-    { title: "Storage & Shelf Life", content: "Keep frozen at -18°C. For the best experience, remove from the freezer 10 minutes before serving. Consume within 7 days of purchase." }
-  ]
+    {
+      title: 'The Craft',
+      content:
+        'Handcrafted daily using traditional French techniques. Each layer of puff pastry is meticulously caramelized to ensure a perfect crunch that contrasts beautifully with our smooth, artisanal ice cream.',
+    },
+    {
+      title: 'Ingredients & Allergens',
+      content:
+        'Wheat Flour, Butter, Milk, Cream, Vanilla Bean, Sugar, Eggs, Seasonal Berries. Contains Gluten, Dairy, Eggs. May contain traces of nuts.',
+    },
+    {
+      title: 'Storage & Shelf Life',
+      content:
+        'Keep frozen at -18°C. Remove from freezer 10 minutes before serving for the ideal texture. Best consumed within 7 days of purchase.',
+    },
+  ],
+  relatedProducts: [
+    { id: 1, name: 'Lotus Cake', price: 450, image: '/cake/lotus.jpg', category: 'Cakes' },
+    { id: 3, name: 'Nutella Cake', price: 500, image: '/cake/nutella.jpg', category: 'Cakes' },
+    { id: 5, name: 'Forest Berry', price: 460, image: '/cake/forest.jpg', category: 'Cakes' },
+    { id: 2, name: 'Mango Cake', price: 480, image: '/cake/mango.jpg', category: 'Cakes' },
+  ],
 };
 
-function Accordion({ title, content }: { title: string; content: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+/* ─────────────────────────────────────────────
+   ACCORDION
+───────────────────────────────────────────── */
+function Accordion({ title, content, index }: { title: string; content: string; index: number }) {
+  const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-gold-border/10 last:border-0">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-6 text-left group"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between py-5 text-left group min-h-[56px]"
       >
-        <span className="text-[11px] uppercase tracking-[0.2em] font-bold text-text-secondary group-hover:text-gold transition-all duration-300">{title}</span>
+        <div className="flex items-center gap-4">
+          <span className="text-[10px] font-black text-gold/30 tabular-nums shrink-0">0{index + 1}</span>
+          <span className="text-[11px] uppercase tracking-[0.22em] font-bold text-text-secondary group-hover:text-gold transition-colors duration-300">
+            {title}
+          </span>
+        </div>
         <div className={cn(
-          "w-8 h-8 rounded-full border border-gold-border/10 flex items-center justify-center transition-all duration-500 group-hover:border-gold/30",
-          isOpen && "border-gold/30 bg-gold/5"
+          'w-7 h-7 rounded-full border shrink-0 flex items-center justify-center transition-all duration-500',
+          open ? 'border-gold/60 bg-gold/10' : 'border-gold-border/20 group-hover:border-gold/40'
         )}>
-          <ChevronDown className={cn("w-3.5 h-3.5 text-text-muted group-hover:text-gold transition-transform duration-500", isOpen && "rotate-180 text-gold")} />
+          <ChevronDown className={cn('w-3 h-3 transition-all duration-300', open ? 'text-gold rotate-180' : 'text-text-muted')} />
         </div>
       </button>
       <AnimatePresence>
-        {isOpen && (
+        {open && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-sm text-text-muted leading-relaxed tracking-wide">
+            <p className="pb-6 pl-9 pr-2 text-sm text-text-muted leading-relaxed tracking-wide">
               {content}
             </p>
           </motion.div>
@@ -62,200 +99,667 @@ function Accordion({ title, content }: { title: string; content: string }) {
   );
 }
 
+/* ─────────────────────────────────────────────
+   RELATED PRODUCTS CAROUSEL
+───────────────────────────────────────────── */
+function RelatedCarousel({ products }: { products: typeof PRODUCT.relatedProducts }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
+
+  const sync = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanLeft(el.scrollLeft > 8);
+    setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 8);
+  }, []);
+
+  const scroll = (dir: 'left' | 'right') => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === 'left' ? -(el.clientWidth * 0.8) : el.clientWidth * 0.8, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="relative">
+
+      {/* Desktop arrow controls */}
+      <div className="hidden sm:flex items-center gap-2 absolute -top-12 right-0 z-10">
+        <button
+          onClick={() => scroll('left')}
+          disabled={!canLeft}
+          className={cn(
+            'w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300',
+            canLeft
+              ? 'border-gold-border/40 text-gold hover:bg-gold/8 hover:border-gold/50 active:scale-95'
+              : 'border-gold-border/10 text-text-fade opacity-30 cursor-not-allowed'
+          )}
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => scroll('right')}
+          disabled={!canRight}
+          className={cn(
+            'w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300',
+            canRight
+              ? 'border-gold-border/40 text-gold hover:bg-gold/8 hover:border-gold/50 active:scale-95'
+              : 'border-gold-border/10 text-text-fade opacity-30 cursor-not-allowed'
+          )}
+        >
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Track — full-bleed on mobile */}
+      <div
+        ref={trackRef}
+        onScroll={sync}
+        className="flex gap-4 overflow-x-auto pb-3"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        <style>{`.carousel-track::-webkit-scrollbar{display:none}`}</style>
+
+        {/* Leading padding on mobile so first card isn't flush */}
+        <div className="shrink-0 w-0.5 sm:hidden" />
+
+        {products.map((p, i) => (
+          <motion.div
+            key={p.id}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.07, duration: 0.5 }}
+            viewport={{ once: true }}
+            className="shrink-0 w-[190px] sm:w-[230px] group"
+          >
+            <Link href={`/products/${p.id}`}>
+              <div className="bg-bg-card border border-gold-border/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-gold-border/35 hover:shadow-hover hover:-translate-y-1 active:scale-[0.97]">
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="230px"
+                    quality={80}
+                  />
+                  {/* Gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg-base/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+                  {/* Category badge */}
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-bg-base/65 backdrop-blur-md text-gold text-[8px] font-black px-2.5 py-1 rounded-full uppercase tracking-[0.15em] border border-gold-border/20">
+                      {p.category}
+                    </span>
+                  </div>
+                  {/* Hover quick-add label */}
+                  <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400 hidden sm:block">
+                    <div className="bg-gold/85 backdrop-blur-sm text-text-on-gold text-[9px] font-black uppercase tracking-[0.18em] py-2 rounded-xl text-center">
+                      Quick Add
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-display text-base text-text-primary mb-2 leading-tight group-hover:text-gold transition-colors duration-300 line-clamp-1">
+                    {p.name}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gold font-bold text-sm">{p.price} <span className="text-[10px] text-gold/55">EGP</span></span>
+                    <div className="w-7 h-7 rounded-full border border-gold-border/15 flex items-center justify-center text-text-fade group-hover:border-gold group-hover:text-gold transition-all duration-300">
+                      <Plus className="w-3 h-3" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+
+        {/* Trailing padding on mobile */}
+        <div className="shrink-0 w-0.5 sm:hidden" />
+      </div>
+
+      {/* Right-edge fade hint on mobile to signal more content */}
+      <div className="pointer-events-none absolute top-0 right-0 w-10 h-[calc(100%-12px)] bg-gradient-to-l from-bg-base to-transparent sm:hidden" />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   MAIN PAGE
+───────────────────────────────────────────── */
 export default function ProductDetailPage() {
-  const [activeImg, setActiveImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState(PRODUCT.variants[0]);
+  const [selectedVariant, setSelectedVariant] = useState(0);
+  const [wishlisted, setWishlisted] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+
+  const imgRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: imgRef, offset: ['start start', 'end start'] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '10%']);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
+
+  const currentVariant = PRODUCT.variants[selectedVariant];
+
+  const handleAddToCart = () => {
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2400);
+  };
 
   return (
     <>
-      <div className="bg-bg-base relative overflow-hidden pt-12 pb-32">
-        {/* Background Ambient Glows */}
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-gold/5 blur-[140px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="bg-bg-base min-h-screen relative overflow-x-hidden">
 
-        <div className="container relative z-10">
-          <motion.nav 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-[10px] uppercase tracking-[0.3em] text-gold mb-12 flex items-center gap-3"
+        {/* ── AMBIENT GLOWS ── */}
+        <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-gold/4 blur-[180px] rounded-full pointer-events-none z-0" />
+        <div className="fixed bottom-1/3 left-0 w-[400px] h-[400px] bg-gold/3 blur-[140px] rounded-full pointer-events-none z-0" />
+
+        {/* ══════════════════════════════════════════
+            BREADCRUMB
+            pt-24 = ~96px which clears the fixed Navbar height
+        ══════════════════════════════════════════ */}
+        <div className="container relative z-10 pt-24 pb-3">
+          <motion.nav
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            aria-label="Breadcrumb"
+            className="flex items-center gap-2 flex-wrap"
           >
-            <span className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer">Home</span>
-            <span className="opacity-20 text-text-primary">/</span>
-            <span className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer">Shop</span>
-            <span className="opacity-20 text-text-primary">/</span>
-            <span className="text-text-primary font-bold">{PRODUCT.name}</span>
+            <Link
+              href="/"
+              className="text-[10px] uppercase tracking-[0.25em] text-text-fade hover:text-gold transition-colors duration-300 font-medium"
+            >
+              Home
+            </Link>
+            <ChevronRight className="w-3 h-3 text-gold-border/30 shrink-0" />
+            <Link
+              href="/shop"
+              className="text-[10px] uppercase tracking-[0.25em] text-text-fade hover:text-gold transition-colors duration-300 font-medium"
+            >
+              Shop
+            </Link>
+            <ChevronRight className="w-3 h-3 text-gold-border/30 shrink-0" />
+            <span className="text-[10px] uppercase tracking-[0.25em] text-text-secondary font-bold truncate max-w-[160px] sm:max-w-none">
+              {PRODUCT.name}
+            </span>
           </motion.nav>
+        </div>
 
-          <div className="flex flex-col lg:flex-row gap-20">
-            {/* Left: Gallery */}
-            <div className="flex-1 space-y-8">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8 }}
-                className="relative aspect-square rounded-[2rem] overflow-hidden border border-gold-border/10 group shadow-card"
+        {/* ══════════════════════════════════════════
+            HERO — SINGLE IMAGE + INFO SPLIT
+        ══════════════════════════════════════════ */}
+        <section className="relative z-10 flex flex-col lg:flex-row">
+
+          {/* ─── LEFT: SINGLE PRODUCT IMAGE ─── */}
+          {/*
+            On desktop: sticky so it stays in view while user scrolls info.
+            On mobile: natural aspect-ratio block, no sticky.
+            top value matches Navbar height (~80px) so it docks just below it.
+          */}
+          <div
+            ref={imgRef}
+            className="lg:sticky lg:top-[80px] lg:self-start w-full lg:w-[52%] relative overflow-hidden"
+            style={{ height: 'clamp(360px, 60vw, calc(100vh - 80px))' }}
+          >
+            {/* Parallax wrapper — only meaningful on desktop scroll */}
+            <motion.div
+              className="absolute inset-0 will-change-transform"
+              style={{ y: imgY, scale: imgScale }}
+            >
+              <Image
+                src={PRODUCT.image}
+                alt={PRODUCT.name}
+                fill
+                className="object-cover object-center"
+                priority
+                sizes="(max-width: 1024px) 100vw, 52vw"
+                quality={95}
+              />
+            </motion.div>
+
+            {/* Directional gradients for clean blending */}
+            <div className="absolute inset-0 bg-gradient-to-t from-bg-base/55 via-transparent to-bg-base/25 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-base/15 lg:to-bg-base/35 pointer-events-none" />
+
+            {/* Top bar: category badge + action buttons */}
+            <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
+              <motion.span
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                className="bg-bg-base/55 backdrop-blur-xl text-gold text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.22em] border border-gold-border/25"
               >
-                <Image
-                  src={PRODUCT.images[activeImg]}
-                  alt={PRODUCT.name}
-                  fill
-                  className="object-cover transition-all duration-1000 group-hover:scale-105"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  quality={95}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-bg-base/20 to-transparent opacity-60" />
-                <button className="absolute top-8 right-8 w-14 h-14 rounded-full bg-bg-card/40 backdrop-blur-xl text-text-primary flex items-center justify-center hover:bg-gold hover:text-text-on-gold transition-all duration-500 shadow-gold/10 border border-gold-border/20 group/btn">
-                  <Heart className="w-6 h-6 transition-transform duration-500 group-hover/btn:scale-110" />
-                </button>
-              </motion.div>
-              
-              <div className="grid grid-cols-4 gap-6">
-                {PRODUCT.images.map((img, i) => (
-                  <motion.button
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 + 0.5 }}
-                    onClick={() => setActiveImg(i)}
-                    className={cn(
-                      "relative aspect-square rounded-2xl overflow-hidden border-2 transition-all duration-500 group",
-                      activeImg === i 
-                        ? "border-gold shadow-gold/30 scale-105" 
-                        : "border-gold-border/10 opacity-40 hover:opacity-100 hover:border-gold/30"
-                    )}
-                  >
-                    <Image src={img} alt={`${PRODUCT.name} ${i}`} fill className="object-cover transition-transform duration-700 group-hover:scale-110" sizes="150px" />
-                  </motion.button>
-                ))}
-              </div>
-            </div>
+                {PRODUCT.category}
+              </motion.span>
 
-            {/* Right: Info */}
-            <div className="flex-1 flex flex-col pt-4">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.45 }}
+                className="flex items-center gap-2"
               >
-                <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
-                  {PRODUCT.category}
-                </span>
-                <h1 className="text-h1 text-text-primary mb-6 font-display leading-tight tracking-tight">
-                  {PRODUCT.name}
-                </h1>
-                <div className="flex items-center gap-6 mb-10">
-                  <p className="text-3xl font-display text-gold tracking-wider">{PRODUCT.price} EGP</p>
-                  <div className="h-4 w-[1px] bg-gold-border/30" />
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map(s => (
-                      <span key={s} className="text-gold text-xs">★</span>
-                    ))}
-                    <span className="text-[10px] text-text-fade uppercase tracking-widest ml-2">(12 Reviews)</span>
-                  </div>
-                </div>
-                
-                <p className="text-text-secondary leading-relaxed mb-12 text-sm tracking-wide max-w-xl">
-                  {PRODUCT.description}
-                </p>
-              </motion.div>
-
-              {/* Variant Selector */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-6 mb-12"
-              >
-                <label className="text-[10px] uppercase tracking-[0.2em] text-gold font-black">Select Experience</label>
-                <div className="flex flex-wrap gap-4">
-                  {PRODUCT.variants.map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setSelectedVariant(v)}
-                      className={cn(
-                        "px-8 py-4 rounded-xl border text-[11px] font-bold uppercase tracking-widest transition-all duration-500",
-                        selectedVariant === v 
-                          ? "bg-gold border-gold text-text-on-gold shadow-gold scale-105" 
-                          : "border-gold-border/20 text-text-secondary hover:border-gold/40 hover:bg-gold/5"
-                      )}
-                    >
-                      {v}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Quantity and Add to Cart */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="flex flex-col sm:flex-row gap-6 mb-16"
-              >
-                <div className="flex items-center h-16 bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-2 min-w-[160px]">
-                  <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-12 h-12 flex items-center justify-center text-text-muted hover:text-gold transition-all duration-300"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="flex-1 text-center font-display text-xl text-text-primary">{quantity}</span>
-                  <button 
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-12 h-12 flex items-center justify-center text-text-muted hover:text-gold transition-all duration-300"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-                <Button variant="gold" className="flex-1 h-16 text-[11px] uppercase tracking-[0.3em] font-black shadow-gold group">
-                  <ShoppingBag className="w-5 h-5 mr-3 transition-transform duration-500 group-hover:scale-110" />
-                  Reserve Now
-                </Button>
-              </motion.div>
-
-              {/* Features List */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16 p-8 rounded-[2rem] bg-bg-card/30 backdrop-blur-md border border-gold-border/10"
-              >
-                <div className="flex flex-col items-center text-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gold/5 flex items-center justify-center">
-                    <Truck className="w-5 h-5 text-gold" />
-                  </div>
-                  <span className="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Premium Delivery</span>
-                </div>
-                <div className="flex flex-col items-center text-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gold/5 flex items-center justify-center">
-                    <ShieldCheck className="w-5 h-5 text-gold" />
-                  </div>
-                  <span className="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Artisanal Quality</span>
-                </div>
-                <div className="flex flex-col items-center text-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gold/5 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-gold" />
-                  </div>
-                  <span className="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Freshly Crafted</span>
-                </div>
-              </motion.div>
-
-              {/* Accordions */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.6 }}
-                className="border-t border-gold-border/10"
-              >
-                {PRODUCT.details.map((detail, i) => (
-                  <Accordion key={i} title={detail.title} content={detail.content} />
-                ))}
+                <button
+                  className="w-10 h-10 rounded-full bg-bg-base/50 backdrop-blur-xl border border-white/10 flex items-center justify-center text-text-muted hover:text-gold hover:border-gold/30 transition-all duration-300 active:scale-90"
+                  aria-label="Share"
+                >
+                  <Share2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setWishlisted(!wishlisted)}
+                  aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                  className={cn(
+                    'w-10 h-10 rounded-full backdrop-blur-xl border flex items-center justify-center transition-all duration-500 active:scale-90',
+                    wishlisted
+                      ? 'bg-gold border-gold text-text-on-gold shadow-[0_0_18px_rgba(212,169,79,0.5)]'
+                      : 'bg-bg-base/50 border-white/10 text-text-muted hover:text-gold hover:border-gold/30'
+                  )}
+                >
+                  <Heart className={cn('w-4 h-4 transition-all duration-300', wishlisted && 'fill-current scale-110')} />
+                </button>
               </motion.div>
             </div>
           </div>
+
+          {/* ─── RIGHT: PRODUCT INFO ─── */}
+          <div className="w-full lg:w-[48%] flex flex-col px-5 sm:px-8 lg:px-12 xl:px-14 py-8 lg:py-12 relative z-10">
+
+            {/* Rating */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="flex items-center gap-3 mb-5"
+            >
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    className={cn(
+                      'w-3.5 h-3.5',
+                      s <= Math.round(PRODUCT.rating) ? 'fill-gold text-gold' : 'text-gold-border/25'
+                    )}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-gold font-bold">{PRODUCT.rating}</span>
+              <span className="text-[11px] text-text-fade tracking-wide">({PRODUCT.reviewCount} reviews)</span>
+            </motion.div>
+
+            {/* Title block */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.32, duration: 0.6 }}
+              className="mb-6"
+            >
+              <p className="text-[10px] uppercase tracking-[0.3em] text-gold/50 font-bold mb-2">
+                {PRODUCT.subtitle}
+              </p>
+              <h1
+                className="font-display font-semibold text-text-primary leading-[1.06] tracking-tight"
+                style={{ fontSize: 'clamp(1.75rem, 4.5vw, 3rem)' }}
+              >
+                {PRODUCT.name}
+              </h1>
+            </motion.div>
+
+            {/* Price */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38 }}
+              className="flex items-baseline gap-3 mb-7 pb-7 border-b border-gold-border/10"
+            >
+              <span className="font-display text-4xl sm:text-5xl text-gold tracking-tight">
+                {currentVariant.price}
+              </span>
+              <span className="text-base text-gold/45 font-light tracking-widest">EGP</span>
+            </motion.div>
+
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.44 }}
+              className="text-text-secondary text-sm leading-[1.9] tracking-wide mb-8"
+            >
+              {PRODUCT.description}
+            </motion.p>
+
+            {/* ── VARIANT SELECTOR ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mb-8"
+            >
+              <p className="text-[10px] uppercase tracking-[0.25em] text-gold/55 font-black mb-3">
+                Select Size
+              </p>
+              <div className="grid grid-cols-3 gap-2.5">
+                {PRODUCT.variants.map((v, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedVariant(i)}
+                    className={cn(
+                      'relative py-3.5 px-2 rounded-2xl border text-center transition-all duration-400 active:scale-[0.96]',
+                      selectedVariant === i
+                        ? 'border-gold shadow-[0_0_20px_rgba(212,169,79,0.1)] bg-gold/6'
+                        : 'border-gold-border/15 hover:border-gold-border/35 bg-bg-card/30'
+                    )}
+                  >
+                    <span className={cn(
+                      'block text-[11px] font-black uppercase tracking-wider mb-0.5 transition-colors',
+                      selectedVariant === i ? 'text-gold' : 'text-text-secondary'
+                    )}>
+                      {v.label}
+                    </span>
+                    <span className="block text-[10px] text-text-fade tracking-wide leading-tight">
+                      {v.sub}
+                    </span>
+                    <span className={cn(
+                      'block text-[11px] font-bold mt-1.5 transition-colors',
+                      selectedVariant === i ? 'text-gold' : 'text-text-muted'
+                    )}>
+                      {v.price} EGP
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* ── QUANTITY + CTA (desktop) ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.58 }}
+              className="hidden lg:flex gap-3 mb-6"
+            >
+              {/* Quantity stepper */}
+              <div className="flex items-center bg-bg-card/55 backdrop-blur-md border border-gold-border/15 rounded-2xl px-1 gap-0.5 h-14 shrink-0">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="w-11 h-11 flex items-center justify-center text-text-muted hover:text-gold transition-colors rounded-xl hover:bg-gold/5 active:scale-90"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="w-9 text-center font-display text-lg text-text-primary select-none tabular-nums">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="w-11 h-11 flex items-center justify-center text-text-muted hover:text-gold transition-colors rounded-xl hover:bg-gold/5 active:scale-90"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* CTA button */}
+              <button
+                onClick={handleAddToCart}
+                className={cn(
+                  'flex-1 h-14 rounded-2xl text-[11px] font-black uppercase tracking-[0.22em] transition-all duration-500 relative overflow-hidden group',
+                  addedToCart
+                    ? 'bg-emerald-600/70 border border-emerald-500/30 text-white'
+                    : 'bg-gradient-to-br from-gold-light via-gold to-gold-dark text-text-on-gold shadow-[0_6px_28px_rgba(212,169,79,0.28)] hover:shadow-[0_10px_36px_rgba(212,169,79,0.42)] hover:-translate-y-0.5'
+                )}
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2.5">
+                  <AnimatePresence mode="wait">
+                    {addedToCart ? (
+                      <motion.span
+                        key="done"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        className="flex items-center gap-2"
+                      >
+                        <motion.svg
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 400 }}
+                          className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </motion.svg>
+                        Added to Cart
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="add"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        className="flex items-center gap-2.5"
+                      >
+                        <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform duration-400" />
+                        Reserve Now
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </span>
+                {/* Shine sweep */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                  <div className="absolute top-0 -left-full w-1/2 h-full bg-gradient-to-r from-transparent via-white/18 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-900" />
+                </div>
+              </button>
+            </motion.div>
+
+            {/* Mobile quantity row (above trust badges) */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.54 }}
+              className="lg:hidden flex items-center gap-3 mb-6"
+            >
+              <p className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold shrink-0">Qty:</p>
+              <div className="flex items-center bg-bg-card/50 border border-gold-border/15 rounded-xl px-1 gap-0.5 h-11">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="w-9 h-9 flex items-center justify-center text-text-muted hover:text-gold transition-colors rounded-lg active:scale-90"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="w-8 text-center font-display text-base text-text-primary select-none tabular-nums">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="w-9 h-9 flex items-center justify-center text-text-muted hover:text-gold transition-colors rounded-lg active:scale-90"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </motion.div>
+
+            {/* ── TRUST BADGES ── */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.64 }}
+              className="grid grid-cols-3 gap-2 mb-10"
+            >
+              {[
+                { icon: Truck, label: 'Same-day Delivery' },
+                { icon: ShieldCheck, label: 'Artisanal Quality' },
+                { icon: Clock, label: 'Freshly Crafted' },
+              ].map(({ icon: Icon, label }, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center gap-2 py-3.5 rounded-xl bg-bg-card/20 border border-gold-border/8 hover:border-gold-border/22 transition-all duration-400 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gold/5 border border-gold-border/12 flex items-center justify-center group-hover:bg-gold/10 transition-all duration-400">
+                    <Icon className="w-3.5 h-3.5 text-gold" />
+                  </div>
+                  <span className="text-[9px] uppercase tracking-[0.12em] text-text-fade font-bold text-center leading-tight px-1">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* ── ACCORDIONS ── */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.72 }}
+              className="border-t border-gold-border/10"
+            >
+              {PRODUCT.details.map((d, i) => (
+                <Accordion key={i} title={d.title} content={d.content} index={i} />
+              ))}
+            </motion.div>
+
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════
+            RELATED PRODUCTS — HORIZONTAL CAROUSEL
+        ══════════════════════════════════════════ */}
+        <section className="relative z-10 py-16 sm:py-24 border-t border-gold-border/8">
+          <div className="container">
+            {/* Header */}
+            <div className="flex items-end justify-between mb-10 sm:mb-14">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-gold/45 font-black mb-2">
+                  You May Also Desire
+                </p>
+                <h2 className="font-display font-semibold text-2xl sm:text-3xl text-text-primary leading-tight">
+                  From Our <span className="text-gold">Atelier</span>
+                </h2>
+              </div>
+              <Link
+                href="/shop"
+                className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-text-muted hover:text-gold transition-colors duration-300 group shrink-0 ml-4"
+              >
+                <span className="hidden sm:inline">View All</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+
+            {/* Carousel — negative margin so cards go edge-to-edge on mobile */}
+            <div className="-mx-5 sm:-mx-8 lg:-mx-12 xl:-mx-16 px-5 sm:px-8 lg:px-12 xl:px-16">
+              <RelatedCarousel products={PRODUCT.relatedProducts} />
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════
+            BOTTOM CTA CARD
+        ══════════════════════════════════════════ */}
+        <section className="relative z-10 border-t border-gold-border/8 py-14">
+          <div className="container">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-between gap-6 max-w-2xl mx-auto text-center sm:text-left bg-bg-card/25 border border-gold-border/10 rounded-2xl px-7 py-8 sm:py-6 hover:border-gold-border/22 transition-all duration-500"
+            >
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-gold/45 font-black mb-1">
+                  Personalize Your Order
+                </p>
+                <h4 className="font-display text-xl text-text-primary">Need a Custom Cake?</h4>
+              </div>
+              <Link href="/special-cakes" className="shrink-0 w-full sm:w-auto">
+                <Button variant="outline" size="default" className="w-full sm:w-auto">
+                  Start Your Design
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════
+            MOBILE STICKY BOTTOM ACTION BAR
+            Hidden on lg+ since desktop has the inline CTA
+        ══════════════════════════════════════════ */}
+        <div
+          className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-bg-base/96 backdrop-blur-2xl border-t border-gold-border/15"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          <div className="flex items-center gap-3 px-4 py-3">
+            {/* Running total */}
+            <div className="flex-1 min-w-0">
+              <p className="text-[9px] uppercase tracking-widest text-text-fade leading-none mb-1">Total</p>
+              <p className="font-display text-xl text-gold font-semibold leading-none tabular-nums">
+                {currentVariant.price * quantity}
+                <span className="text-xs text-gold/50 ml-1">EGP</span>
+              </p>
+            </div>
+
+            {/* Wishlist toggle */}
+            <button
+              onClick={() => setWishlisted(!wishlisted)}
+              aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+              className={cn(
+                'w-12 h-12 rounded-2xl border flex items-center justify-center transition-all duration-400 active:scale-90 shrink-0',
+                wishlisted
+                  ? 'border-gold bg-gold/12 text-gold'
+                  : 'border-gold-border/20 text-text-muted'
+              )}
+            >
+              <Heart className={cn('w-5 h-5', wishlisted && 'fill-current')} />
+            </button>
+
+            {/* Reserve button */}
+            <button
+              onClick={handleAddToCart}
+              className={cn(
+                'flex-[2] h-12 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 active:scale-[0.97] relative overflow-hidden',
+                addedToCart
+                  ? 'bg-emerald-600/70 text-white'
+                  : 'bg-gradient-to-r from-gold via-gold-light to-gold text-text-on-gold shadow-[0_4px_20px_rgba(212,169,79,0.3)]'
+              )}
+            >
+              <AnimatePresence mode="wait">
+                {addedToCart ? (
+                  <motion.span
+                    key="done"
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center justify-center gap-2"
+                  >
+                    <motion.svg
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 450 }}
+                      className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                    >
+                      <path d="M20 6L9 17l-5-5" />
+                    </motion.svg>
+                    Added!
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="add"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center justify-center gap-2"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    Reserve Now
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </button>
+          </div>
         </div>
+
+        {/* Spacer so sticky bar doesn't cover page content */}
+        <div className="lg:hidden h-[72px]" />
+
       </div>
       <Footer />
     </>
