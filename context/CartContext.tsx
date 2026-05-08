@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface CartItem {
+export interface CartItem {
   id: number;
   name: string;
   price: number;
@@ -12,9 +12,11 @@ interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: any) => void;
+  addItem: (item: Omit<CartItem, 'quantity'>, openDrawer?: boolean) => void;
   removeItem: (id: number) => void;
   updateQuantity: (id: number, delta: number) => void;
+  clearCart: () => void;
+  totalItems: number;
   total: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
@@ -25,27 +27,36 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
+  // Hydrate from localStorage after mount (prevents SSR mismatch)
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setItems(JSON.parse(savedCart));
+    try {
+      const saved = localStorage.getItem('lenza_cart');
+      if (saved) setItems(JSON.parse(saved));
+    } catch {
+      // ignore parse errors
     }
+    setHydrated(true);
   }, []);
 
+  // Persist to localStorage on every change (after hydration)
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    if (!hydrated) return;
+    localStorage.setItem('lenza_cart', JSON.stringify(items));
+  }, [items, hydrated]);
 
-  const addItem = (item: any) => {
+  const addItem = (item: Omit<CartItem, 'quantity'>, openDrawer = true) => {
     setItems(prev => {
       const existing = prev.find(i => i.id === item.id);
       if (existing) {
-        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
+        return prev.map(i =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        );
       }
       return [...prev, { ...item, quantity: 1 }];
     });
-    setIsCartOpen(true);
+    if (openDrawer) setIsCartOpen(true);
   };
 
   const removeItem = (id: number) => {
@@ -53,18 +64,36 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (id: number, delta: number) => {
-    setItems(prev => prev.map(i => {
-      if (i.id === id) {
-        return { ...i, quantity: Math.max(1, i.quantity + delta) };
-      }
-      return i;
-    }));
+    setItems(prev =>
+      prev.map(i => {
+        if (i.id === id) {
+          const next = i.quantity + delta;
+          return next < 1 ? i : { ...i, quantity: next };
+        }
+        return i;
+      })
+    );
   };
 
+  const clearCart = () => setItems([]);
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, total, isCartOpen, setIsCartOpen }}>
+    <CartContext.Provider
+      value={{
+        items,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCart,
+        totalItems,
+        total,
+        isCartOpen,
+        setIsCartOpen,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

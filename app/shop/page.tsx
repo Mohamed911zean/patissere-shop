@@ -5,9 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Footer } from '@/components/layout/Footer';
-import { motion } from 'framer-motion';
-import { Heart, Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Heart, Search, SlidersHorizontal, X, ChevronDown, ShoppingBag, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/context/CartContext';
 
 const CATEGORIES = [
   'All', 'Cakes', 'Pastries', 'Ice Cream', 'Chocolates', 'Seasonal', 'Heat & Eat', 'Special Cakes'
@@ -30,6 +31,9 @@ export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [addedMap, setAddedMap] = useState<Record<number, boolean>>({});
+
+  const { addItem } = useCart();
 
   const filteredProducts = PRODUCTS.filter(p =>
     (activeCategory === 'All' || p.category === activeCategory) &&
@@ -40,6 +44,15 @@ export default function ShopPage() {
   const toggleWishlist = (id: number, e: React.MouseEvent) => {
     e.preventDefault();
     setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const handleQuickAdd = (e: React.MouseEvent, product: typeof PRODUCTS[0]) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (addedMap[product.id]) return;
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+    setAddedMap(prev => ({ ...prev, [product.id]: true }));
+    setTimeout(() => setAddedMap(prev => ({ ...prev, [product.id]: false })), 2000);
   };
 
   return (
@@ -291,9 +304,28 @@ export default function ShopPage() {
                             {/* Desktop hover overlay with CTA */}
                             <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-bg-base/90 via-bg-base/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <div className="hidden sm:flex absolute bottom-6 left-0 w-full px-5 gap-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                              <Button variant="gold" size="sm" className="flex-1 shadow-gold text-xs">
-                                Quick Add
-                              </Button>
+                              <button
+                                onClick={(e) => handleQuickAdd(e, product)}
+                                className={cn(
+                                  'flex-1 h-10 rounded-xl text-[10px] font-black uppercase tracking-[0.15em]',
+                                  'flex items-center justify-center gap-1.5 transition-all duration-300 active:scale-95',
+                                  addedMap[product.id]
+                                    ? 'bg-emerald-600/80 text-white'
+                                    : 'bg-gradient-to-r from-gold-light via-gold to-gold-dark text-text-on-gold shadow-[0_4px_16px_rgba(212,169,79,0.35)]'
+                                )}
+                              >
+                                <AnimatePresence mode="wait">
+                                  {addedMap[product.id] ? (
+                                    <motion.span key="done" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                                      <Check className="w-3.5 h-3.5" /> Added!
+                                    </motion.span>
+                                  ) : (
+                                    <motion.span key="add" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                                      <ShoppingBag className="w-3.5 h-3.5" /> Quick Add
+                                    </motion.span>
+                                  )}
+                                </AnimatePresence>
+                              </button>
                             </div>
                           </div>
 
@@ -312,13 +344,32 @@ export default function ShopPage() {
                               <span className="text-sm sm:text-lg font-display text-gold tracking-wide">{product.price} <span className="text-[10px] sm:text-xs text-gold/70">EGP</span></span>
 
                               {/* Mobile: tap to add button */}
-                              <button className="sm:hidden flex items-center justify-center w-7 h-7 rounded-full bg-gold/10 border border-gold/20 text-gold hover:bg-gold hover:text-text-on-gold transition-all duration-300 active:scale-95">
-                                <span className="text-base font-light leading-none mb-[1px]">+</span>
+                              <button
+                                onClick={(e) => handleQuickAdd(e, product)}
+                                aria-label={`Add ${product.name} to cart`}
+                                className={cn(
+                                  'sm:hidden flex items-center justify-center w-8 h-8 rounded-full border transition-all duration-300 active:scale-90',
+                                  addedMap[product.id]
+                                    ? 'bg-emerald-600/70 border-emerald-500/30 text-white'
+                                    : 'bg-gold/10 border-gold/20 text-gold hover:bg-gold hover:text-text-on-gold'
+                                )}
+                              >
+                                <AnimatePresence mode="wait">
+                                  {addedMap[product.id] ? (
+                                    <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                                      <Check className="w-3.5 h-3.5" />
+                                    </motion.span>
+                                  ) : (
+                                    <motion.span key="bag" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                                      <ShoppingBag className="w-3.5 h-3.5" />
+                                    </motion.span>
+                                  )}
+                                </AnimatePresence>
                               </button>
 
                               {/* Desktop: add indicator */}
                               <div className="hidden sm:flex w-10 h-10 rounded-full border border-gold-border/10 items-center justify-center text-text-muted group-hover:border-gold group-hover:text-gold transition-all duration-500">
-                                <span className="text-lg font-light">+</span>
+                                <ShoppingBag className="w-4 h-4" />
                               </div>
                             </div>
                           </div>

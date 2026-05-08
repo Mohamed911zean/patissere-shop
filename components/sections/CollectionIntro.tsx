@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCart } from '@/context/CartContext';
+import { ShoppingBag, Check } from 'lucide-react';
 
 const CATEGORIES = [
   { en: 'All',        ar: 'الكل' },
@@ -23,6 +25,7 @@ const PRODUCTS = [
     nameEn: 'Lotus Cake',      nameAr: 'كيكة اللوتس',
     category: 'Cakes',
     priceEn: '450 EGP',        priceAr: '٤٥٠ ج.م',
+    price: 450,
     image: '/cake/lotus.jpg',
     available: true,
   },
@@ -31,6 +34,7 @@ const PRODUCTS = [
     nameEn: 'Mango Cake',      nameAr: 'كيكة المانجو',
     category: 'Cakes',
     priceEn: '480 EGP',        priceAr: '٤٨٠ ج.م',
+    price: 480,
     image: '/cake/mango.jpg',
     available: false,
   },
@@ -39,6 +43,7 @@ const PRODUCTS = [
     nameEn: 'Nutella Cake',    nameAr: 'كيكة النوتيلا',
     category: 'Cakes',
     priceEn: '500 EGP',        priceAr: '٥٠٠ ج.م',
+    price: 500,
     image: '/cake/nutella.jpg',
     available: true,
   },
@@ -47,6 +52,7 @@ const PRODUCTS = [
     nameEn: 'Strawberry Vadge', nameAr: 'فراولة فدج',
     category: 'Pastries',
     priceEn: '350 EGP',        priceAr: '٣٥٠ ج.م',
+    price: 350,
     image: '/cake/strawberry-vadge.jpg',
     available: true,
   },
@@ -55,6 +61,7 @@ const PRODUCTS = [
     nameEn: 'Honey Soggy',     nameAr: 'سوجي بالعسل',
     category: 'Soggy',
     priceEn: '280 EGP',        priceAr: '٢٨٠ ج.م',
+    price: 280,
     image: '/soggy/honey-soggy.jpg',
     available: true,
   },
@@ -63,6 +70,7 @@ const PRODUCTS = [
     nameEn: 'Forest Berry Cake', nameAr: 'كيكة الفورست',
     category: 'Cakes',
     priceEn: '460 EGP',        priceAr: '٤٦٠ ج.م',
+    price: 460,
     image: '/cake/forest.jpg',
     available: true,
   },
@@ -71,6 +79,7 @@ const PRODUCTS = [
     nameEn: 'Four Season Cake', nameAr: 'كيكة الفور سيزون',
     category: 'Cakes',
     priceEn: '520 EGP',        priceAr: '٥٢٠ ج.م',
+    price: 520,
     image: '/cake/four-season.jpg',
     available: true,
   },
@@ -79,6 +88,7 @@ const PRODUCTS = [
     nameEn: 'Nutella Soggy',   nameAr: 'سوجي بالنوتيلا',
     category: 'Soggy',
     priceEn: '300 EGP',        priceAr: '٣٠٠ ج.م',
+    price: 300,
     image: '/soggy/nutell-soggy.jpg',
     available: true,
   },
@@ -99,13 +109,37 @@ function ArrowIcon({ flip }: { flip?: boolean }) {
 
 export function CollectionIntro() {
   const { language } = useLanguage();
+  const { addItem } = useCart();
   const isAr = language === 'ar';
   const [activeCategory, setActiveCategory] = useState('All');
+  const [addedMap, setAddedMap] = useState<Record<number, boolean>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = activeCategory === 'All'
     ? PRODUCTS
     : PRODUCTS.filter(p => p.category === activeCategory);
+
+  const handleQuickAdd = (
+    e: React.MouseEvent,
+    product: typeof PRODUCTS[0],
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!product.available || addedMap[product.id]) return;
+
+    addItem({
+      id: product.id,
+      name: isAr ? product.nameAr : product.nameEn,
+      price: product.price,
+      image: product.image,
+    });
+
+    setAddedMap(prev => ({ ...prev, [product.id]: true }));
+    setTimeout(
+      () => setAddedMap(prev => ({ ...prev, [product.id]: false })),
+      2000,
+    );
+  };
 
   return (
     <section className="section bg-bg-base relative overflow-hidden" dir={isAr ? 'rtl' : 'ltr'}>
@@ -173,6 +207,7 @@ export function CollectionIntro() {
             {filteredProducts.map((product, index) => {
               // Alternate tall / square — only visible on mobile (lg always uses same ratio)
               const isTall = index % 2 === 0;
+              const isAdded = !!addedMap[product.id];
 
               return (
                 <motion.div
@@ -255,14 +290,47 @@ export function CollectionIntro() {
                         'transition-all duration-300',
                         'hidden sm:block'
                       )}>
-                        <Button
-                          variant="gold"
-                          size="sm"
-                          className="w-full text-[10px] py-2 min-h-[36px]"
+                        <button
+                          onClick={(e) => handleQuickAdd(e, product)}
                           disabled={product.available === false}
+                          className={cn(
+                            'w-full py-2 min-h-[36px] rounded-xl',
+                            'text-[10px] font-black uppercase tracking-[0.15em]',
+                            'flex items-center justify-center gap-1.5',
+                            'transition-all duration-300 active:scale-95',
+                            product.available === false
+                              ? 'opacity-40 cursor-not-allowed bg-gray-500/50 text-white'
+                              : isAdded
+                              ? 'bg-emerald-600/80 text-white'
+                              : 'bg-gradient-to-r from-gold-light via-gold to-gold-dark text-text-on-gold shadow-[0_4px_16px_rgba(212,169,79,0.35)] hover:shadow-[0_6px_20px_rgba(212,169,79,0.5)]'
+                          )}
                         >
-                          {isAr ? 'أضف للسلة' : 'Quick Add'}
-                        </Button>
+                          <AnimatePresence mode="wait">
+                            {isAdded ? (
+                              <motion.span
+                                key="done"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="flex items-center gap-1"
+                              >
+                                <Check className="w-3 h-3" />
+                                {isAr ? 'أضيف!' : 'Added!'}
+                              </motion.span>
+                            ) : (
+                              <motion.span
+                                key="add"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="flex items-center gap-1"
+                              >
+                                <ShoppingBag className="w-3 h-3" />
+                                {isAr ? 'أضف للسلة' : 'Quick Add'}
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
+                        </button>
                       </div>
                     </div>
 
@@ -293,23 +361,50 @@ export function CollectionIntro() {
                           {isAr ? product.priceAr : product.priceEn}
                         </p>
 
-                        {/* Mobile: arrow navigates to product page */}
-                        <Link
-                          href={`/products/${product.id}`}
-                          aria-label={isAr ? product.nameAr : product.nameEn}
+                        {/* Mobile: quick-add button */}
+                        <button
+                          onClick={(e) => {
+                            if (!product.available) return;
+                            handleQuickAdd(e, product);
+                          }}
+                          disabled={product.available === false}
+                          aria-label={isAr ? `أضف ${product.nameAr} للسلة` : `Add ${product.nameEn} to cart`}
                           className={cn(
                             'w-8 h-8 rounded-full shrink-0',
-                            'border border-gold-border/20 bg-bg-base',
                             'flex items-center justify-center',
-                            'text-gold hover:bg-gold hover:border-gold hover:text-text-on-gold',
-                            'active:scale-95 transition-all duration-300',
-                            'sm:hidden' // desktop uses hover quick-add
+                            'active:scale-90 transition-all duration-300',
+                            'sm:hidden',
+                            product.available === false
+                              ? 'opacity-30 cursor-not-allowed border border-gold-border/15 text-text-fade'
+                              : isAdded
+                              ? 'bg-emerald-600/70 border border-emerald-500/30 text-white'
+                              : 'border border-gold-border/20 bg-bg-base text-gold hover:bg-gold hover:border-gold hover:text-text-on-gold'
                           )}
                         >
-                          <ArrowIcon flip={isAr} />
-                        </Link>
+                          <AnimatePresence mode="wait">
+                            {isAdded ? (
+                              <motion.span
+                                key="check"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                              </motion.span>
+                            ) : (
+                              <motion.span
+                                key="plus"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                              >
+                                <ShoppingBag className="w-3.5 h-3.5" />
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
+                        </button>
 
-                        {/* Desktop arrow */}
+                        {/* Desktop arrow — navigates to product page */}
                         <Link
                           href={`/products/${product.id}`}
                           aria-label={isAr ? product.nameAr : product.nameEn}

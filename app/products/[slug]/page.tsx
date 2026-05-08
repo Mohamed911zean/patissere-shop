@@ -9,14 +9,16 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import {
   Minus, Plus, ShoppingBag, Heart, ChevronDown,
   Truck, ShieldCheck, Clock, ArrowLeft, ArrowRight,
-  Share2, Star, ChevronRight
+  Share2, Star, ChevronRight, Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/context/CartContext';
 
 /* ─────────────────────────────────────────────
    DATA
 ───────────────────────────────────────────── */
 const PRODUCT = {
+  id: 7,
   name: 'Four Seasons Cake',
   subtitle: 'A French Classic, Reimagined',
   category: 'Ice Cream Cakes',
@@ -102,7 +104,15 @@ function Accordion({ title, content, index }: { title: string; content: string; 
 /* ─────────────────────────────────────────────
    RELATED PRODUCTS CAROUSEL
 ───────────────────────────────────────────── */
-function RelatedCarousel({ products }: { products: typeof PRODUCT.relatedProducts }) {
+function RelatedCarousel({
+  products,
+  onAddToCart,
+  addedMap,
+}: {
+  products: typeof PRODUCT.relatedProducts;
+  onAddToCart: (e: React.MouseEvent, p: typeof PRODUCT.relatedProducts[0]) => void;
+  addedMap: Record<number, boolean>;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
@@ -196,9 +206,17 @@ function RelatedCarousel({ products }: { products: typeof PRODUCT.relatedProduct
                     </span>
                   </div>
                   {/* Hover quick-add label */}
-                  <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400 hidden sm:block">
-                    <div className="bg-gold/85 backdrop-blur-sm text-text-on-gold text-[9px] font-black uppercase tracking-[0.18em] py-2 rounded-xl text-center">
-                      Quick Add
+                  <div
+                    className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400 hidden sm:block"
+                    onClick={(e) => onAddToCart(e, p)}
+                  >
+                    <div className={cn(
+                      'backdrop-blur-sm text-[9px] font-black uppercase tracking-[0.18em] py-2 rounded-xl text-center transition-all duration-300',
+                      addedMap[p.id]
+                        ? 'bg-emerald-600/85 text-white'
+                        : 'bg-gold/85 text-text-on-gold'
+                    )}>
+                      {addedMap[p.id] ? 'Added!' : 'Quick Add'}
                     </div>
                   </div>
                 </div>
@@ -208,9 +226,18 @@ function RelatedCarousel({ products }: { products: typeof PRODUCT.relatedProduct
                   </h3>
                   <div className="flex items-center justify-between">
                     <span className="text-gold font-bold text-sm">{p.price} <span className="text-[10px] text-gold/55">EGP</span></span>
-                    <div className="w-7 h-7 rounded-full border border-gold-border/15 flex items-center justify-center text-text-fade group-hover:border-gold group-hover:text-gold transition-all duration-300">
-                      <Plus className="w-3 h-3" />
-                    </div>
+                    <button
+                      onClick={(e) => onAddToCart(e, p)}
+                      aria-label={`Add ${p.name} to cart`}
+                      className={cn(
+                        'w-7 h-7 rounded-full border flex items-center justify-center transition-all duration-300 active:scale-90',
+                        addedMap[p.id]
+                          ? 'border-emerald-500/40 bg-emerald-600/70 text-white'
+                          : 'border-gold-border/15 text-text-fade group-hover:border-gold group-hover:text-gold'
+                      )}
+                    >
+                      {addedMap[p.id] ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -236,6 +263,9 @@ export default function ProductDetailPage() {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [wishlisted, setWishlisted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [relatedAddedMap, setRelatedAddedMap] = useState<Record<number, boolean>>({});
+
+  const { addItem } = useCart();
 
   const imgRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: imgRef, offset: ['start start', 'end start'] });
@@ -245,8 +275,25 @@ export default function ProductDetailPage() {
   const currentVariant = PRODUCT.variants[selectedVariant];
 
   const handleAddToCart = () => {
+    if (addedToCart) return;
+    // Use variant-specific id so each size is a distinct cart entry
+    addItem({
+      id: PRODUCT.id * 100 + selectedVariant,
+      name: `${PRODUCT.name} – ${currentVariant.label}`,
+      price: currentVariant.price,
+      image: PRODUCT.image,
+    });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2400);
+  };
+
+  const handleRelatedAdd = (e: React.MouseEvent, product: typeof PRODUCT.relatedProducts[0]) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (relatedAddedMap[product.id]) return;
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+    setRelatedAddedMap(prev => ({ ...prev, [product.id]: true }));
+    setTimeout(() => setRelatedAddedMap(prev => ({ ...prev, [product.id]: false })), 2000);
   };
 
   return (
@@ -647,7 +694,11 @@ export default function ProductDetailPage() {
 
             {/* Carousel — negative margin so cards go edge-to-edge on mobile */}
             <div className="-mx-5 sm:-mx-8 lg:-mx-12 xl:-mx-16 px-5 sm:px-8 lg:px-12 xl:px-16">
-              <RelatedCarousel products={PRODUCT.relatedProducts} />
+              <RelatedCarousel
+                products={PRODUCT.relatedProducts}
+                onAddToCart={handleRelatedAdd}
+                addedMap={relatedAddedMap}
+              />
             </div>
           </div>
         </section>

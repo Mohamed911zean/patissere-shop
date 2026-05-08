@@ -28,7 +28,7 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   const { language, setLanguage, t } = useLanguage();
-  const { items, setIsCartOpen } = useCart();
+  const { items, totalItems, setIsCartOpen } = useCart();
   const { city, area, setIsModalOpen } = useLocation();
   const pathname = usePathname();
 
@@ -44,7 +44,7 @@ export function Navbar() {
     };
   }, [isMenuOpen]);
 
-  const cartCount = mounted ? items.length : 0;
+  const cartCount = mounted ? totalItems : 0;
   const currentLang = mounted ? language : 'en';
 
   const textColor = isScrolled ? "text-black" : "text-white drop-shadow-md";

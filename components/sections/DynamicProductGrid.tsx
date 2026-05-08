@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
+import { ShoppingBag, Check } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { cn } from '@/lib/utils';
 
 function SkeletonCard() {
   return (
@@ -33,6 +35,8 @@ const ALL_PRODUCTS = [
 
 export function DynamicProductGrid() {
   const [loading, setLoading] = useState(true);
+  const [addedMap, setAddedMap] = useState<Record<number, boolean>>({});
+  const { addItem } = useCart();
   
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1200);
@@ -40,6 +44,13 @@ export function DynamicProductGrid() {
   }, []);
 
   const products = useMemo(() => ALL_PRODUCTS, []);
+
+  const handleAdd = (product: typeof ALL_PRODUCTS[0]) => {
+    if (addedMap[product.id]) return;
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+    setAddedMap(prev => ({ ...prev, [product.id]: true }));
+    setTimeout(() => setAddedMap(prev => ({ ...prev, [product.id]: false })), 2000);
+  };
 
   return (
     <section className="section bg-bg-base relative overflow-hidden">
@@ -60,7 +71,12 @@ export function DynamicProductGrid() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Button variant="outline" className="min-w-[180px]">View Full Catalog</Button>
+            <a
+              href="/shop"
+              className="inline-flex items-center justify-center min-w-[180px] px-6 py-3 rounded-xl border border-gold-border/30 text-[11px] font-black uppercase tracking-[0.18em] text-text-secondary hover:border-gold hover:text-gold transition-all duration-400"
+            >
+              View Full Catalog
+            </a>
           </motion.div>
         </div>
 
@@ -103,9 +119,28 @@ export function DynamicProductGrid() {
                       <h4 className="text-h4 text-text-primary mb-2 font-display group-hover:text-gold transition-colors duration-300">{product.name}</h4>
                       <div className="flex items-center justify-between">
                         <p className="text-gold font-bold tracking-wider">{product.price} EGP</p>
-                        <div className="w-10 h-10 rounded-full border border-gold-border/10 flex items-center justify-center text-text-muted group-hover:border-gold group-hover:text-gold transition-all duration-500">
-                          <span className="text-lg font-light">+</span>
-                        </div>
+                        <button
+                          onClick={() => handleAdd(product)}
+                          aria-label={`Add ${product.name} to cart`}
+                          className={cn(
+                            'w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-400 active:scale-90',
+                            addedMap[product.id]
+                              ? 'border-emerald-500/40 bg-emerald-600/70 text-white'
+                              : 'border-gold-border/10 text-text-muted group-hover:border-gold group-hover:text-gold'
+                          )}
+                        >
+                          <AnimatePresence mode="wait">
+                            {addedMap[product.id] ? (
+                              <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                                <Check className="w-4 h-4" />
+                              </motion.span>
+                            ) : (
+                              <motion.span key="bag" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                                <ShoppingBag className="w-4 h-4" />
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
+                        </button>
                       </div>
                     </div>
                   </div>
