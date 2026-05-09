@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -35,7 +36,7 @@ const PRODUCTS = [
 ];
 
 export default function ShopPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   const [activeCategoryEn, setActiveCategoryEn] = useState('All');
@@ -81,7 +82,7 @@ export default function ShopPage() {
           <div className="container relative z-10 text-center">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
               <nav className="text-[10px] uppercase tracking-[0.4em] text-gold mb-5">
-                {isAr ? 'الرئيسية' : 'Home'} <span className="mx-3 opacity-30 text-text-primary">/</span> {isAr ? 'المتجر' : 'Shop'}
+                {t('sections.home')} <span className="mx-3 opacity-30 text-text-primary">/</span> {t('sections.shop')}
               </nav>
               <h1 className="text-h1 text-text-primary uppercase tracking-[0.2em] font-display mb-4">
                 {isAr ? (
@@ -120,7 +121,7 @@ export default function ShopPage() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder={isAr ? 'بحث...' : 'Search...'}
+              placeholder={t('sections.search')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-xl px-5 py-3 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-300 placeholder:text-text-fade pr-10"
@@ -132,7 +133,7 @@ export default function ShopPage() {
             className="flex items-center gap-2 px-4 py-3 rounded-xl bg-bg-card/50 border border-gold-border/20 text-text-secondary hover:border-gold/40 hover:text-gold transition-all duration-300"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            <span className="text-[11px] uppercase tracking-widest">{isAr ? 'تصفية' : 'Filter'}</span>
+            <span className="text-[11px] uppercase tracking-widest">{t('sections.filter')}</span>
           </button>
         </div>
 
@@ -171,7 +172,7 @@ export default function ShopPage() {
                 onClick={() => { setActiveCategoryEn('All'); setPriceRange(1000); setSearchQuery(''); setMobileFiltersOpen(false); }}
                 className="w-full py-4 text-[10px] uppercase tracking-[0.2em] text-text-muted border border-gold-border/10 rounded-xl hover:bg-gold/5 hover:border-gold-border/30 hover:text-gold transition-all duration-500"
               >
-                {isAr ? 'إعادة ضبط' : 'Reset All'}
+                {t('sections.reset_all')}
               </button>
             </motion.div>
           </div>
@@ -198,7 +199,7 @@ export default function ShopPage() {
 
               {/* Categories */}
               <div className="space-y-6">
-                <h4 className="text-[11px] uppercase tracking-[0.2em] text-gold font-black">{isAr ? 'الفئات' : 'Categories'}</h4>
+                <h4 className="text-[11px] uppercase tracking-[0.2em] text-gold font-black">{t('sections.categories')}</h4>
                 <ul className="space-y-4">
                   {CATEGORIES.map(cat => (
                     <li key={cat.en}>
@@ -241,7 +242,7 @@ export default function ShopPage() {
                 onClick={() => { setActiveCategoryEn('All'); setPriceRange(1000); setSearchQuery(''); }}
                 className="w-full py-4 text-[10px] uppercase tracking-[0.2em] text-text-muted border border-gold-border/10 rounded-xl hover:bg-gold/5 hover:border-gold-border/30 hover:text-gold transition-all duration-500"
               >
-                {isAr ? 'إعادة ضبط' : 'Reset Selection'}
+                {t('sections.reset_selection')}
               </button>
             </aside>
 
@@ -353,11 +354,11 @@ export default function ShopPage() {
 
                             {/* Description — hidden on mobile for space */}
                             <p className="hidden sm:block text-xs text-text-muted mb-5 tracking-wide line-clamp-1">
-                              {isAr ? 'تميز مصنوع يدوياً بأجود المكونات.' : 'Handcrafted excellence using premium ingredients.'}
+                              {t('sections.handcrafted_excellence_using_p')}
                             </p>
 
                             <div className="flex items-center justify-between mt-1 sm:mt-0">
-                              <span className="text-sm sm:text-lg font-display text-gold tracking-wide">{product.price} <span className="text-[10px] sm:text-xs text-gold/70">{isAr ? 'ج.م' : 'EGP'}</span></span>
+                              <span className="text-sm sm:text-lg font-display text-gold tracking-wide">{product.price} <span className="text-[10px] sm:text-xs text-gold/70">{t('sections.egp')}</span></span>
 
                               {/* Mobile: tap to add button */}
                               <button

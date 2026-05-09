@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
@@ -55,7 +56,7 @@ const SLIDES = [
 ];
 
 export function HeroSlider() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<any>(null);
@@ -126,14 +127,14 @@ export function HeroSlider() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -14 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className={`w-full ${isAr ? 'text-right' : ''}`}
+              className={`w-full ${t('sections.')}`}
             >
               {/* Label with decorative line */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
-                className={`flex items-center gap-3 mb-3 sm:mb-4 ${isAr ? 'flex-row-reverse justify-end' : ''}`}
+                className={`flex items-center gap-3 mb-3 sm:mb-4 ${t('sections.')}`}
               >
                 <span className="block w-4 h-[1px] bg-yellow-400/70 shrink-0" />
                 <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.28em] text-yellow-400/90">
@@ -160,7 +161,7 @@ export function HeroSlider() {
                 className={`
                   pointer-events-auto
                   flex flex-col sm:flex-row gap-3
-                  ${isAr ? 'sm:flex-row-reverse items-stretch sm:items-center' : 'items-stretch sm:items-center'}
+                  ${t('sections.items_stretch_sm_items_center')}
                 `}
               >
                 <Link href={SLIDES[activeIndex].href} className="w-full sm:w-auto">
@@ -195,7 +196,7 @@ export function HeroSlider() {
         style={{ paddingBottom: 'max(calc(env(safe-area-inset-bottom) + 14px), 14px)' }}
       >
         {/* Pill dots */}
-        <div className={`flex items-center gap-2 ${isAr ? 'order-2' : 'order-1'}`}>
+        <div className={`flex items-center gap-2 ${t('sections.order_1')}`}>
           {SLIDES.map((_, i) => (
             <button
               key={i}
@@ -219,7 +220,7 @@ export function HeroSlider() {
         </div>
 
         {/* Counter */}
-        <div className={`flex items-center gap-2 pb-3 ${isAr ? 'order-1' : 'order-2'}`}>
+        <div className={`flex items-center gap-2 pb-3 ${t('sections.order_2')}`}>
           <span className="text-white text-xs font-light tabular-nums">
             {String(activeIndex + 1).padStart(2, '0')}
           </span>

@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -15,7 +16,7 @@ type CheckoutStep = 'info' | 'shipping' | 'payment' | 'success';
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, total, totalItems, clearCart } = useCart();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   
   const [mounted, setMounted] = useState(false);
@@ -99,27 +100,25 @@ export default function CheckoutPage() {
               <Check className="w-10 h-10 text-emerald-500" />
             </div>
             <h1 className="text-4xl font-display text-text-primary mb-4">
-              {isAr ? 'تم تأكيد طلبك' : 'Order Confirmed'}
+              {t('sections.order_confirmed')}
             </h1>
             <p className="text-text-secondary text-lg mb-8">
-              {isAr 
-                ? `شكراً لك، ${formData.firstName}. رقم طلبك هو #LZ-${Math.floor(10000 + Math.random() * 90000)}` 
-                : `Thank you, ${formData.firstName}. Your order number is #LZ-${Math.floor(10000 + Math.random() * 90000)}`
+              {t('sections.thank_you_formdata_firstnam')
               }
             </p>
             <div className="bg-bg-card border border-gold-border/10 rounded-2xl p-6 mb-10 text-left">
               <h3 className="font-bold text-text-primary uppercase tracking-widest mb-4 border-b border-border-subtle pb-4">
-                {isAr ? 'تفاصيل الطلب' : 'Order Details'}
+                {t('sections.order_details')}
               </h3>
               <div className="space-y-3 text-sm text-text-secondary">
-                <p><span className="text-text-primary font-medium">{isAr ? 'الاسم:' : 'Name:'}</span> {formData.firstName} {formData.lastName}</p>
-                <p><span className="text-text-primary font-medium">{isAr ? 'البريد:' : 'Email:'}</span> {formData.email}</p>
-                <p><span className="text-text-primary font-medium">{isAr ? 'الطريقة:' : 'Method:'}</span> {deliveryMethod === 'delivery' ? 'Delivery' : 'Store Pickup'}</p>
+                <p><span className="text-text-primary font-medium">{t('sections.name')}</span> {formData.firstName} {formData.lastName}</p>
+                <p><span className="text-text-primary font-medium">{t('sections.email')}</span> {formData.email}</p>
+                <p><span className="text-text-primary font-medium">{t('sections.method')}</span> {deliveryMethod === 'delivery' ? 'Delivery' : 'Store Pickup'}</p>
                 {deliveryMethod === 'delivery' && (
-                  <p><span className="text-text-primary font-medium">{isAr ? 'العنوان:' : 'Address:'}</span> {formData.address}, {formData.city}</p>
+                  <p><span className="text-text-primary font-medium">{t('sections.address')}</span> {formData.address}, {formData.city}</p>
                 )}
                 {deliveryMethod === 'pickup' && (
-                  <p><span className="text-text-primary font-medium">{isAr ? 'الفرع:' : 'Branch:'}</span> {formData.pickupBranch}</p>
+                  <p><span className="text-text-primary font-medium">{t('sections.branch')}</span> {formData.pickupBranch}</p>
                 )}
               </div>
             </div>
@@ -127,7 +126,7 @@ export default function CheckoutPage() {
               href="/"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-light via-gold to-gold-dark text-text-on-gold px-8 py-4 rounded-xl font-black uppercase tracking-[0.2em] shadow-[0_4px_20px_rgba(212,169,79,0.3)] hover:shadow-[0_6px_28px_rgba(212,169,79,0.45)] transition-all duration-300 active:scale-95"
             >
-              {isAr ? 'العودة للرئيسية' : 'Return to Home'}
+              {t('sections.return_to_home')}
             </Link>
           </motion.div>
         ) : (

@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React from 'react';
 import Link from 'next/link';
@@ -8,7 +9,7 @@ import { MapPin } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function BranchesCTA() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   return (
@@ -43,7 +44,7 @@ export function BranchesCTA() {
               5
             </span>
             <span className="text-[10px] uppercase tracking-[0.28em] text-gold/60 mt-1">
-              {isAr ? 'فروع' : 'Branches'}
+              {t('sections.branches')}
             </span>
           </div>
 
@@ -69,13 +70,11 @@ export function BranchesCTA() {
             </div>
 
             <h3 className="text-h3 text-text-primary font-medium leading-tight">
-              {isAr ? 'فروع لينزا في مصر' : 'Lenza across Egypt'}
+              {t('sections.lenza_across_egypt')}
             </h3>
 
             <p className="text-text-muted text-sm leading-relaxed max-w-sm">
-              {isAr
-                ? 'نقرب الحلاوة منك — اعثر على أقرب فرع إليك'
-                : 'Bringing sweetness closer to you — find your nearest location.'}
+              {t('sections.bringing_sweetness_closer_to_y')}
             </p>
 
             <Link href="/branches" className="mt-2 w-full sm:w-auto">
@@ -85,7 +84,7 @@ export function BranchesCTA() {
                 className="w-full sm:w-auto min-h-[44px] px-10
                            hover:shadow-gold transition-all duration-500"
               >
-                {isAr ? 'اعثر على أقرب فرع' : 'Find a Branch'}
+                {t('sections.find_a_branch')}
               </Button>
             </Link>
           </div>

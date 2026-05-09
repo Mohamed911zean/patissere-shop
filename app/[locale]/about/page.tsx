@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React from 'react';
 import Image from 'next/image';
@@ -10,7 +11,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function AboutPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   const commitmentItems = [
@@ -43,7 +44,7 @@ export default function AboutPage() {
         <div className="relative h-[70vh] min-h-[600px] flex items-center justify-center overflow-hidden">
           <Image
             src="/hero-section.png"
-            alt={isAr ? 'لينزا سويتس - قصتنا' : 'About Lenza Sweets'}
+            alt={t('sections.about_lenza_sweets')}
             fill
             className="object-cover transition-transform duration-[20s] scale-110 hover:scale-100"
             priority
@@ -56,7 +57,7 @@ export default function AboutPage() {
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             >
               <nav className="text-[10px] uppercase tracking-[0.4em] text-gold mb-8 font-bold">
-                {isAr ? 'الرئيسية • قصتنا' : 'Home • Our Story'}
+                {t('sections.home_our_story')}
               </nav>
               <h1 className="text-hero text-text-primary mb-8 leading-[1.1]">
                 {isAr ? (
@@ -66,9 +67,7 @@ export default function AboutPage() {
                 )}
               </h1>
               <p className="text-script text-gold text-4xl lg:text-5xl drop-shadow-lg">
-                {isAr
-                  ? 'نجلب الفرحة والنكهة لكل مناسبة بحلوياتنا الخالدة.'
-                  : 'Bringing joy and flavor to every occasion with timeless desserts.'}
+                {t('sections.bringing_joy_and_flavor_to_eve')}
               </p>
             </motion.div>
           </div>
@@ -79,7 +78,7 @@ export default function AboutPage() {
           <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1/3 h-full bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="container">
-            <div className={`flex flex-col lg:flex-row items-center gap-24 ${isAr ? 'lg:flex-row-reverse' : ''}`}>
+            <div className={`flex flex-col lg:flex-row items-center gap-24 ${t('sections.')}`}>
               <motion.div
                 initial={{ opacity: 0, x: isAr ? 50 : -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -89,7 +88,7 @@ export default function AboutPage() {
               >
                 <Image
                   src="/why-choose-us.jpg"
-                  alt={isAr ? 'قصة لينزا' : 'Our Story'}
+                  alt={t('sections.our_story')}
                   fill
                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
                 />
@@ -101,24 +100,20 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1 }}
                 viewport={{ once: true }}
-                className={`flex-1 ${isAr ? 'text-right' : ''}`}
+                className={`flex-1 ${t('sections.')}`}
               >
                 <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold mb-6 block">
-                  {isAr ? 'أكثر من ١٢ عاماً من الشغف إلى الإتقان' : 'Over 12 Years From Passion to Perfection'}
+                  {t('sections.over_12_years_from_passion_to')}
                 </span>
                 <h2 className="text-h2 text-text-primary mb-8 leading-tight">
-                  {isAr ? 'قصتنا' : 'Our Story'}
+                  {t('sections.our_story')}
                 </h2>
                 <div className="space-y-6 text-body text-text-secondary font-light leading-relaxed">
                   <p>
-                    {isAr
-                      ? 'لينزا سويتس هي إرث مصري أصيل في عالم الحلويات. بدأنا رحلتنا بحلم بسيط: تقديم أجود الحلويات المصنوعة يدوياً بمكونات طازجة وبحب حقيقي، وتحولنا إلى علامة تجارية محبوبة لدى آلاف العائلات.'
-                      : 'Lenza Sweets is an authentic Egyptian legacy in the world of confectionery. We began our journey with a simple dream: to deliver the finest handcrafted sweets made with fresh ingredients and genuine love — growing into a beloved brand trusted by thousands of families.'}
+                    {t('sections.lenza_sweets_is_an_authentic_e')}
                   </p>
                   <p>
-                    {isAr
-                      ? 'رحلتنا كانت دائماً تدور حول أكثر من مجرد الحلاوة؛ بل حول أن نكون جزءاً من احتفالاتكم ومناسباتكم ولحظاتكم اليومية الخاصة.'
-                      : 'Our journey has always been about more than just sweets; it\'s about being a part of your celebrations, your milestones, and your everyday moments of indulgence.'}
+                    {t('sections.our_journey_has_always_been_ab')}
                   </p>
                 </div>
                 <GoldDivider />
@@ -133,10 +128,10 @@ export default function AboutPage() {
           <div className="container relative z-10">
             <div className="text-center mb-20">
               <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold mb-4 block">
-                {isAr ? 'حيث كل مكوّن يلتقي بالكمال' : 'Where Every Ingredient Meets Perfection'}
+                {t('sections.where_every_ingredient_meets_p')}
               </span>
               <h2 className="text-h2 text-text-primary uppercase tracking-widest">
-                {isAr ? 'التزامنا بالجودة' : 'Our Commitment to Quality'}
+                {t('sections.our_commitment_to_quality')}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
@@ -147,7 +142,7 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: i * 0.2 }}
                   viewport={{ once: true }}
-                  className={`bg-bg-card border border-gold-border/10 rounded-[32px] p-10 lg:p-14 hover:border-gold-border/30 transition-all duration-500 group shadow-premium ${isAr ? 'text-right' : ''}`}
+                  className={`bg-bg-card border border-gold-border/10 rounded-[32px] p-10 lg:p-14 hover:border-gold-border/30 transition-all duration-500 group shadow-premium ${t('sections.')}`}
                 >
                   <div className="relative h-72 mb-10 rounded-2xl overflow-hidden border border-white/5">
                     <Image src={item.img} alt={isAr ? item.titleAr : item.titleEn} fill className="object-cover group-hover:scale-105 transition-transform duration-[1.5s]" />

@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React from 'react';
 import Image from 'next/image';
@@ -8,12 +9,12 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function SpecialCakeCTA() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   const dynamicDate = new Date();
   dynamicDate.setDate(dynamicDate.getDate() + 2);
-  const formattedDate = dynamicDate.toLocaleDateString(isAr ? 'ar-EG' : 'en-GB', {
+  const formattedDate = dynamicDate.toLocaleDateString(t('sections.en_gb'), {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -26,7 +27,7 @@ export function SpecialCakeCTA() {
 
       <div className="container px-6 mx-auto relative z-10">
         {/* flex-col-reverse puts the image ON TOP for mobile/tablet */}
-        <div className={`flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20 ${isAr ? 'lg:flex-row-reverse' : ''}`}>
+        <div className={`flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20 ${t('sections.')}`}>
           
           {/* Content */}
           <div className={`flex-1 w-full text-center ${isAr ? 'lg:text-right' : 'lg:text-left'}`}>
@@ -38,30 +39,28 @@ export function SpecialCakeCTA() {
               className="flex flex-col items-center lg:items-start"
             >
               <span className="text-script text-gold text-3xl lg:text-5xl mb-4 block drop-shadow-sm">
-                {isAr ? 'اطلب كيكة خاصة' : 'Order A Very Special Cake'}
+                {t('sections.order_a_very_special_cake')}
               </span>
               
               {/* Responsive Text: Smaller on mobile, large on desktop */}
               <h2 className="text-3xl md:text-4xl lg:text-5xl text-text-primary mb-6 leading-tight font-bold max-w-lg lg:max-w-full">
-                {isAr ? 'اجعل احتفالك لا يُنسى' : 'Make Your Celebration Unforgettable'}
+                {t('sections.make_your_celebration_unforget')}
               </h2>
               
               <p className="text-sm md:text-base text-text-secondary mb-10 max-w-md lg:max-w-xl font-light leading-relaxed">
-                {isAr
-                  ? 'سواء كانت حفل زفاف، عيد ميلاد، أو أي مناسبة، يصنع طهاة المعجنات لدينا كيكات مخصصة رائعة الجمال وشهية الطعم — كل كيكة تحفة فنية بمكونات فاخرة وذوقك الفريد.'
-                  : 'Whether it\'s a wedding, birthday, or any milestone, our master pastry chefs create bespoke cakes that are as beautiful as they are delicious. Each cake is a work of art, handcrafted with the finest ingredients and your unique vision.'}
+                {t('sections.whether_it')}
               </p>
 
-              <div className={`flex flex-col sm:flex-row items-center gap-6 w-full ${isAr ? 'sm:flex-row-reverse sm:justify-center lg:justify-start' : 'sm:justify-center lg:justify-start'}`}>
+              <div className={`flex flex-col sm:flex-row items-center gap-6 w-full ${t('sections.sm_justify_center_lg_justify_s')}`}>
                 <Link href="/special-cakes">
                   <Button variant="gold" size="lg" className="shadow-[0_10px_20px_-10px_rgba(212,169,79,0.5)] hover:scale-105 transition-transform w-full sm:w-auto">
-                    {isAr ? 'ابدأ الاستشارة' : 'Start Consultation'}
+                    {t('sections.start_consultation')}
                   </Button>
                 </Link>
                 
-                <div className={`flex flex-col items-center ${isAr ? 'sm:items-end' : 'sm:items-start'}`}>
+                <div className={`flex flex-col items-center ${t('sections.sm_items_start')}`}>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold mb-1">
-                    {isAr ? 'توصيل متاح' : 'Available Delivery'}
+                    {t('sections.available_delivery')}
                   </p>
                   <p className="text-xs lg:text-sm text-gold font-medium tracking-wide bg-gold/10 px-3 py-1 rounded-full border border-gold/20">
                     {formattedDate}
@@ -98,7 +97,7 @@ export function SpecialCakeCTA() {
               >
                 <Image
                   src="/cake/royal-cake-enhanced.png"
-                  alt={isAr ? 'كيكة خاصة لينزا' : 'Special Lenza Cake'}
+                  alt={t('sections.special_lenza_cake')}
                   fill
                   className="object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] scale-110"
                 />

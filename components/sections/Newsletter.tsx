@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -8,7 +9,7 @@ import { CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function Newsletter() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
 
@@ -24,7 +25,7 @@ export function Newsletter() {
       <div className="absolute inset-0 z-0">
         <Image
           src="/why-choose-us.jpg"
-          alt={isAr ? 'خلفية النشرة البريدية' : 'Newsletter background'}
+          alt={t('sections.newsletter_background')}
           fill
           className="object-cover opacity-10"
         />
@@ -41,15 +42,13 @@ export function Newsletter() {
             viewport={{ once: true }}
           >
             <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-6 block">
-              {isAr ? 'ابقَ على اطلاع' : 'Stay Enchanted'}
+              {t('sections.stay_enchanted')}
             </span>
             <h2 className="text-h2 text-text-primary font-display mb-6">
-              {isAr ? 'انضم إلى الدائرة المميزة' : 'Join the Elite Circle'}
+              {t('sections.join_the_elite_circle')}
             </h2>
             <p className="text-text-secondary mb-12 max-w-md mx-auto tracking-wide text-sm">
-              {isAr
-                ? 'اشترك لتلقي عروض حصرية ودعوات لتذوق منتجاتنا الموسمية الجديدة.'
-                : 'Subscribe to receive exclusive invitations to our private tastings and seasonal collection launches.'}
+              {t('sections.subscribe_to_receive_exclusive')}
             </p>
           </motion.div>
 
@@ -66,10 +65,10 @@ export function Newsletter() {
                 </div>
                 <div className="space-y-2">
                   <h4 className="text-2xl font-display text-text-primary">
-                    {isAr ? 'شكراً لك!' : 'Thank you!'}
+                    {t('sections.thank_you')}
                   </h4>
                   <p className="text-text-muted">
-                    {isAr ? 'تم الاشتراك في قائمتنا البريدية بنجاح.' : "You've successfully joined our mailing list."}
+                    {t('sections.you_ve_successfully_joined_our')}
                   </p>
                 </div>
               </motion.div>
@@ -78,15 +77,15 @@ export function Newsletter() {
                 key="form"
                 exit={{ opacity: 0, y: -20 }}
                 onSubmit={handleSubmit}
-                className={`flex flex-col md:flex-row gap-4 max-w-2xl mx-auto ${isAr ? 'md:flex-row-reverse' : ''}`}
+                className={`flex flex-col md:flex-row gap-4 max-w-2xl mx-auto ${t('sections.')}`}
               >
                 <div className="flex-1 group relative">
                   <input
                     type="email"
-                    placeholder={isAr ? 'البريد الإلكتروني' : 'Email Address'}
+                    placeholder={t('sections.email_address')}
                     required
                     dir={isAr ? 'rtl' : 'ltr'}
-                    className={`w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-full px-8 py-5 text-text-primary focus:outline-none focus:border-gold transition-all duration-300 group-hover:border-gold-border/40 ${isAr ? 'text-right' : ''}`}
+                    className={`w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-full px-8 py-5 text-text-primary focus:outline-none focus:border-gold transition-all duration-300 group-hover:border-gold-border/40 ${t('sections.')}`}
                   />
                   <div className="absolute inset-0 rounded-full bg-gold/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
                 </div>
@@ -97,12 +96,12 @@ export function Newsletter() {
                   className="md:w-52 h-[62px] shadow-gold group"
                 >
                   {status === 'loading'
-                    ? (isAr ? 'جارٍ الاشتراك...' : 'Joining...')
+                    ? (t('sections.joining'))
                     : (
                       <>
-                        {isAr ? 'اشترك' : 'Subscribe'}{' '}
-                        <span className={`ml-2 transition-transform duration-500 ${isAr ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'} inline-block`}>
-                          {isAr ? '←' : '→'}
+                        {t('sections.subscribe')}{' '}
+                        <span className={`ml-2 transition-transform duration-500 ${t('sections.group_hover_translate_x_1')} inline-block`}>
+                          {t('sections.')}
                         </span>
                       </>
                     )}

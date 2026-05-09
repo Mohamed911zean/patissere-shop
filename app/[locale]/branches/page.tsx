@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
@@ -83,7 +84,7 @@ const CITIES = [
 ];
 
 export default function BranchesPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   const [selectedCity, setSelectedCity] = useState('All');
@@ -102,7 +103,7 @@ export default function BranchesPage() {
 
   return (
     <>
-      <div className={`bg-bg-base pt-24 pb-32 relative overflow-hidden ${isAr ? 'text-right' : ''}`}>
+      <div className={`bg-bg-base pt-24 pb-32 relative overflow-hidden ${t('sections.')}`}>
         {/* Background Decorative Element */}
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-gold/5 to-transparent pointer-events-none" />
 
@@ -114,13 +115,13 @@ export default function BranchesPage() {
               transition={{ duration: 0.8 }}
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-gold mb-4 block">
-                {isAr ? 'ابحث عن أقرب فرع' : 'Find Your Nearest Store'}
+                {t('sections.find_your_nearest_store')}
               </span>
               <h1 className="text-h1 text-text-primary uppercase tracking-widest leading-tight">
-                {isAr ? 'فروعنا' : 'Our Branches'}
+                {t('sections.our_branches')}
               </h1>
               <p className="text-text-secondary mt-4 text-sm">
-                {isAr ? '٥ فروع في القاهرة والمنصورة' : '5 Branches across Cairo & Mansoura'}
+                {t('sections.5_branches_across_cairo_mans')}
               </p>
             </motion.div>
           </div>
@@ -136,7 +137,7 @@ export default function BranchesPage() {
 
             <div className="flex-1 space-y-4 relative z-10">
               <label className="text-[10px] uppercase tracking-[0.3em] text-text-fade font-bold ml-2">
-                {isAr ? 'اختر المدينة' : 'Select City'}
+                {t('sections.select_city')}
               </label>
               <div className="flex flex-wrap gap-3">
                 {CITIES.map(city => (
@@ -158,18 +159,18 @@ export default function BranchesPage() {
 
             <div className="flex-1 space-y-4 relative z-10">
               <label className="text-[10px] uppercase tracking-[0.3em] text-text-fade font-bold ml-2">
-                {isAr ? 'ابحث بالمنطقة أو الاسم' : 'Search Area'}
+                {t('sections.search_area')}
               </label>
               <div className="relative group/search">
                 <input
                   type="text"
-                  placeholder={isAr ? 'ابحث عن فرع...' : 'Search by area or branch name...'}
+                  placeholder={t('sections.search_by_area_or_branch_name')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   dir={isAr ? 'rtl' : 'ltr'}
-                  className={`w-full bg-bg-elevated/50 border border-gold-border/10 rounded-full px-8 py-4 text-sm text-text-primary focus:outline-none focus:border-gold transition-all duration-300 group-hover/search:border-gold-border/30 ${isAr ? 'text-right pr-8 pl-14' : 'pr-14'}`}
+                  className={`w-full bg-bg-elevated/50 border border-gold-border/10 rounded-full px-8 py-4 text-sm text-text-primary focus:outline-none focus:border-gold transition-all duration-300 group-hover/search:border-gold-border/30 ${t('sections.pr_14')}`}
                 />
-                <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-text-fade group-hover/search:text-gold transition-colors duration-300 ${isAr ? 'left-6' : 'right-6'}`} />
+                <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-text-fade group-hover/search:text-gold transition-colors duration-300 ${t('sections.right_6')}`} />
               </div>
             </div>
           </motion.div>
@@ -198,13 +199,13 @@ export default function BranchesPage() {
                 </h4>
 
                 <div className="space-y-6 flex-1 relative z-10">
-                  <div className={`flex gap-5 text-sm text-text-secondary leading-relaxed font-light ${isAr ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex gap-5 text-sm text-text-secondary leading-relaxed font-light ${t('sections.')}`}>
                     <div className="w-10 h-10 rounded-full bg-bg-elevated border border-gold-border/10 flex items-center justify-center text-gold shrink-0 group-hover:bg-gold group-hover:text-text-on-gold transition-all duration-500">
                       <MapPin className="w-4 h-4" />
                     </div>
                     <span className="pt-2">{isAr ? branch.addressAr : branch.addressEn}</span>
                   </div>
-                  <div className={`flex gap-5 text-sm text-text-secondary font-light ${isAr ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex gap-5 text-sm text-text-secondary font-light ${t('sections.')}`}>
                     <div className="w-10 h-10 rounded-full bg-bg-elevated border border-gold-border/10 flex items-center justify-center text-gold shrink-0 group-hover:bg-gold group-hover:text-text-on-gold transition-all duration-500">
                       <Phone className="w-4 h-4" />
                     </div>
@@ -216,7 +217,7 @@ export default function BranchesPage() {
                       ))}
                     </div>
                   </div>
-                  <div className={`flex gap-5 text-sm text-text-secondary font-light ${isAr ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex gap-5 text-sm text-text-secondary font-light ${t('sections.')}`}>
                     <div className="w-10 h-10 rounded-full bg-bg-elevated border border-gold-border/10 flex items-center justify-center text-gold shrink-0 group-hover:bg-gold group-hover:text-text-on-gold transition-all duration-500">
                       <Clock className="w-4 h-4" />
                     </div>
@@ -231,7 +232,7 @@ export default function BranchesPage() {
                   className="mt-10 relative z-10"
                 >
                   <Button variant="outline" className="w-full h-14 group-hover:bg-gold group-hover:text-text-on-gold transition-all duration-500">
-                    {isAr ? 'احصل على الاتجاهات' : 'Get Directions'} <ExternalLink className="w-4 h-4 ml-2" />
+                    {t('sections.get_directions')} <ExternalLink className="w-4 h-4 ml-2" />
                   </Button>
                 </a>
               </motion.div>
@@ -242,7 +243,7 @@ export default function BranchesPage() {
             <div className="text-center py-20">
               <Search className="w-12 h-12 text-gold/20 mx-auto mb-6" />
               <p className="text-text-muted text-lg font-display">
-                {isAr ? 'لا توجد فروع مطابقة' : 'No branches found'}
+                {t('sections.no_branches_found')}
               </p>
             </div>
           )}

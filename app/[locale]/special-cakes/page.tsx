@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -36,7 +37,7 @@ const SIZES = [
 ];
 
 export default function SpecialCakesPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const router = useRouter();
   
@@ -67,7 +68,7 @@ export default function SpecialCakesPage() {
   };
 
   const handleSubmit = () => {
-    toast.success(isAr ? 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.' : 'Your inquiry has been sent successfully! We will contact you soon.');
+    toast.success(t('sections.your_inquiry_has_been_sent_suc'));
     router.push('/');
   };
 
@@ -122,7 +123,7 @@ export default function SpecialCakesPage() {
                 </div>
                 
                 <span className="text-script text-gold text-4xl sm:text-6xl mb-4 sm:mb-6 block drop-shadow-lg">
-                  {isAr ? 'تجربة استثنائية' : 'A Bespoke Experience'}
+                  {t('sections.a_bespoke_experience')}
                 </span>
                 <h1 className="text-4xl sm:text-7xl text-text-primary uppercase tracking-[0.15em] sm:tracking-[0.2em] font-display mb-8 leading-tight">
                   {isAr ? (
@@ -132,13 +133,11 @@ export default function SpecialCakesPage() {
                   )}
                 </h1>
                 <p className="text-text-secondary text-sm sm:text-base tracking-widest max-w-2xl mx-auto mb-12 leading-relaxed">
-                  {isAr 
-                    ? 'رحلة مخصصة لتصميم كيكة تعكس ذوقك الرفيع. طهاتنا في انتظار رؤيتك ليحولوها إلى واقع مذهل.' 
-                    : 'A personalized journey to design a cake that reflects your exquisite taste. Our master chefs await your vision to bring it to stunning reality.'}
+                  {t('sections.a_personalized_journey_to_desi')}
                 </p>
                 
                 <Button variant="gold" className="h-16 px-12 text-[11px] uppercase tracking-[0.3em] font-black shadow-[0_0_40px_rgba(212,169,79,0.3)] group" onClick={nextStep}>
-                  {isAr ? 'ابدأ الرحلة' : 'Begin the Journey'} <Sparkles className="w-4 h-4 ml-3 transition-transform duration-500 group-hover:rotate-12" />
+                  {t('sections.begin_the_journey')} <Sparkles className="w-4 h-4 ml-3 transition-transform duration-500 group-hover:rotate-12" />
                 </Button>
               </motion.div>
             )}
@@ -148,10 +147,10 @@ export default function SpecialCakesPage() {
               <motion.div key="step1" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-6xl mx-auto w-full">
                 <div className="text-center mb-10 sm:mb-16">
                   <span className="text-[18px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
-                    {isAr ? '1' : '1'}
+                    {t('sections.1')}
                   </span>
                   <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
-                    {isAr ? 'ماذا نحتفل؟' : 'What are we celebrating?'}
+                    {t('sections.what_are_we_celebrating')}
                   </h2>
                 </div>
 
@@ -195,10 +194,10 @@ export default function SpecialCakesPage() {
               <motion.div key="step2" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-4xl mx-auto w-full">
                 <div className="text-center mb-10 sm:mb-16">
                   <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
-                    {isAr ? 'الفصل الثاني' : 'Chapter II'}
+                    {t('sections.chapter_ii')}
                   </span>
                   <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
-                    {isAr ? 'ما حجم الاحتفال؟' : 'How grand is the celebration?'}
+                    {t('sections.how_grand_is_the_celebration')}
                   </h2>
                 </div>
 
@@ -239,7 +238,7 @@ export default function SpecialCakesPage() {
 
                 <div className="mt-12 flex justify-center">
                   <button onClick={prevStep} className="text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold transition-colors flex items-center group">
-                    <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {isAr ? 'العودة' : 'Go Back'}
+                    <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {t('sections.go_back')}
                   </button>
                 </div>
               </motion.div>
@@ -250,10 +249,10 @@ export default function SpecialCakesPage() {
               <motion.div key="step3" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-4xl mx-auto w-full">
                 <div className="text-center mb-10 sm:mb-16">
                   <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
-                    {isAr ? 'الفصل الثالث' : 'Chapter III'}
+                    {t('sections.chapter_iii')}
                   </span>
                   <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
-                    {isAr ? 'اختر جوهر المذاق' : 'Choose the essence.'}
+                    {t('sections.choose_the_essence')}
                   </h2>
                 </div>
 
@@ -279,7 +278,7 @@ export default function SpecialCakesPage() {
 
                 <div className="mt-16 flex justify-center">
                   <button onClick={prevStep} className="text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold transition-colors flex items-center group">
-                    <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {isAr ? 'العودة' : 'Go Back'}
+                    <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {t('sections.go_back')}
                   </button>
                 </div>
               </motion.div>
@@ -290,10 +289,10 @@ export default function SpecialCakesPage() {
               <motion.div key="step4" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-4xl mx-auto w-full">
                 <div className="text-center mb-10 sm:mb-16">
                   <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
-                    {isAr ? 'اللمسات الأخيرة' : 'The Finishing Touches'}
+                    {t('sections.the_finishing_touches')}
                   </span>
                   <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
-                    {isAr ? 'تفاصيل تحفتك' : 'Detail your masterpiece.'}
+                    {t('sections.detail_your_masterpiece')}
                   </h2>
                 </div>
 
@@ -302,11 +301,11 @@ export default function SpecialCakesPage() {
                     {/* Theme */}
                     <div className="space-y-4">
                       <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black block">
-                        {isAr ? 'التوجيه المرئي / الألوان' : 'Visual Direction / Theme'}
+                        {t('sections.visual_direction_theme')}
                       </label>
                       <input
                         type="text"
-                        placeholder={isAr ? 'مثال: ذهبي ملكي، أبيض كلاسيكي...' : 'e.g. Royal Gold and Midnight White...'}
+                        placeholder={t('sections.e_g_royal_gold_and_midnight_w')}
                         className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40"
                         onChange={(e) => updateForm('colorTheme', e.target.value)}
                         value={formData.colorTheme}
@@ -316,26 +315,26 @@ export default function SpecialCakesPage() {
                     {/* Phone Number */}
                     <div className="space-y-4">
                       <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-2">
-                        {isAr ? 'رقم الهاتف' : 'Phone Number'}
+                        {t('sections.phone_number')}
                         <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
-                        placeholder={isAr ? 'أدخل رقم هاتفك...' : 'Enter your phone number...'}
+                        placeholder={t('sections.enter_your_phone_number')}
                         className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40"
                         onChange={(e) => updateForm('phoneNumber', e.target.value)}
                         value={formData.phoneNumber}
                         required
                       />
                       <p className="text-[10px] text-text-fade tracking-wider">
-                        {isAr ? 'سيتواصل معك متجرنا لتأكيد حجز الكيكة.' : 'Our shop will contact you to confirm the cake booking.'}
+                        {t('sections.our_shop_will_contact_you_to_c')}
                       </p>
                     </div>
 
                     {/* Date */}
                     <div className="space-y-4">
                       <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black block">
-                        {isAr ? 'تاريخ الاستلام المطلوب' : 'Desired Celebration Date'}
+                        {t('sections.desired_celebration_date')}
                       </label>
                       <div className="relative group">
                         <input
@@ -347,18 +346,18 @@ export default function SpecialCakesPage() {
                         <Calendar className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-text-fade group-hover:text-gold transition-colors duration-500 pointer-events-none" />
                       </div>
                       <p className="text-[10px] text-text-fade tracking-wider">
-                        {isAr ? 'ملاحظة: يتطلب ٤٨ ساعة على الأقل.' : 'Note: Requires at least 48 hours notice.'}
+                        {t('sections.note_requires_at_least_48_hou')}
                       </p>
                     </div>
 
                     {/* Message */}
                     <div className="space-y-4">
                       <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black block">
-                        {isAr ? 'رسالة التهنئة' : 'Calligraphy Message (Optional)'}
+                        {t('sections.calligraphy_message_optional')}
                       </label>
                       <div className="relative">
                         <textarea
-                          placeholder={isAr ? 'ماذا نكتب على الكيكة؟' : 'What should our artists write?'}
+                          placeholder={t('sections.what_should_our_artists_write')}
                           className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40 min-h-[120px] resize-none"
                           onChange={(e) => updateForm('message', e.target.value)}
                           value={formData.message}
@@ -370,7 +369,7 @@ export default function SpecialCakesPage() {
 
                   <div className="flex gap-4 sm:gap-6 pt-10">
                     <button onClick={prevStep} className="flex-1 h-14 sm:h-16 rounded-2xl border border-gold-border/10 text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold hover:border-gold/40 transition-all flex items-center justify-center group">
-                      <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {isAr ? 'رجوع' : 'Back'}
+                      <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {t('sections.back')}
                     </button>
                     <Button 
                       variant="gold" 
@@ -381,7 +380,7 @@ export default function SpecialCakesPage() {
                         formData.deliveryDate && formData.phoneNumber ? "shadow-gold opacity-100" : "opacity-50 grayscale cursor-not-allowed"
                       )}
                     >
-                      {isAr ? 'مراجعة التحفة' : 'Review Masterpiece'} <ChevronRight className="w-4 h-4 ml-2 rtl:-scale-x-100 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                      {t('sections.review_masterpiece')} <ChevronRight className="w-4 h-4 ml-2 rtl:-scale-x-100 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
                     </Button>
                   </div>
                 </div>
@@ -396,7 +395,7 @@ export default function SpecialCakesPage() {
                     <CheckCircle2 className="w-10 h-10 text-gold" />
                   </div>
                   <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
-                    {isAr ? 'اكتملت الرؤية' : 'Vision Complete'}
+                    {t('sections.vision_complete')}
                   </h2>
                 </div>
 
@@ -408,24 +407,24 @@ export default function SpecialCakesPage() {
 
                   <div className="pb-8 mb-8 relative z-10">
                     <h3 className="text-[11px] uppercase tracking-[0.4em] text-gold font-black text-center mb-8">
-                      {isAr ? 'مواصفات التحفة' : 'Masterpiece Specifications'}
+                      {t('sections.masterpiece_specifications')}
                     </h3>
                     
                     <div className="grid grid-cols-2 gap-y-6 gap-x-4">
                       <div>
-                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'المناسبة' : 'Occasion'}</p>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{t('sections.occasion')}</p>
                         <p className="text-sm text-text-primary font-bold">{formData.occasion}</p>
                       </div>
                       <div>
-                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'الحجم' : 'Size'}</p>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{t('sections.size')}</p>
                         <p className="text-sm text-text-primary font-bold">{formData.size}</p>
                       </div>
                       <div>
-                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'النكهة' : 'Flavor'}</p>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{t('sections.flavor')}</p>
                         <p className="text-sm text-text-primary font-bold">{formData.flavor}</p>
                       </div>
                       <div>
-                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'التاريخ' : 'Date'}</p>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{t('sections.date')}</p>
                         <p className="text-sm text-gold font-bold">{formData.deliveryDate}</p>
                       </div>
                     </div>
@@ -433,18 +432,16 @@ export default function SpecialCakesPage() {
 
                   <div className="relative z-10 space-y-6">
                     <Button onClick={handleSubmit} variant="gold" className="w-full h-16 text-[18px] uppercase tracking-[0.3em] font-black shadow-[0_0_30px_rgba(212,169,79,0.3)]">
-                      {isAr ? 'إرسال لطهاتنا' : 'Submit to Chefs'}
+                      {t('sections.submit_to_chefs')}
                     </Button>
                     <button onClick={prevStep} className="w-full text-[18px] uppercase tracking-[0.2em] font-black text-text-muted hover:text-gold transition-colors">
-                      {isAr ? 'تعديل المواصفات' : 'Modify Specifications'}
+                      {t('sections.modify_specifications')}
                     </button>
                   </div>
                 </div>
 
                 <p className="text-center mt-10 text-[10px] text-text-fade tracking-widest leading-relaxed max-w-md mx-auto">
-                  {isAr 
-                    ? 'بمجرد الإرسال، سيتواصل معك كبير طهاتنا لتأكيد التفاصيل.' 
-                    : 'Once submitted, our head chef will contact you to finalize the details.'}
+                  {t('sections.once_submitted_our_head_chef')}
                 </p>
               </motion.div>
             )}

@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
@@ -95,7 +96,7 @@ function FAQItem({
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <div className={`pb-8 text-text-muted leading-relaxed tracking-wide text-sm max-w-2xl ${isAr ? 'text-right pr-2' : 'pl-2'}`}>
+            <div className={`pb-8 text-text-muted leading-relaxed tracking-wide text-sm max-w-2xl ${t('sections.pl_2')}`}>
               {isAr ? answerAr : answerEn}
             </div>
           </motion.div>
@@ -106,7 +107,7 @@ function FAQItem({
 }
 
 export default function FAQsPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
@@ -121,7 +122,7 @@ export default function FAQsPage() {
             <div className="text-center mb-20">
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
                 <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-6 block">
-                  {isAr ? 'مركز المساعدة' : 'Assistance Center'}
+                  {t('sections.assistance_center')}
                 </span>
                 <h1 className="text-h2 text-text-primary font-display uppercase tracking-widest">
                   {isAr
@@ -160,16 +161,14 @@ export default function FAQsPage() {
               className="mt-20 text-center p-12 rounded-[2rem] bg-gold/5 border border-gold-border/10"
             >
               <h4 className="text-xl font-display text-text-primary mb-4">
-                {isAr ? 'لا تزال لديك أسئلة؟' : 'Still have questions?'}
+                {t('sections.still_have_questions')}
               </h4>
               <p className="text-sm text-text-muted mb-8 tracking-wide">
-                {isAr
-                  ? 'فريقنا متاح يومياً للإجابة عن استفساراتك.'
-                  : 'Our team is available daily to assist you with any inquiries.'}
+                {t('sections.our_team_is_available_daily_to')}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                 <a href="/contact-us" className="text-[11px] font-black uppercase tracking-[0.2em] text-gold hover:text-gold-light transition-colors">
-                  {isAr ? 'تواصل معنا' : 'Contact Us'}
+                  {t('sections.contact_us')}
                 </a>
                 <div className="hidden sm:block w-[1px] h-4 bg-gold-border/20" />
                 <a href="tel:0228434457" className="text-[11px] font-black uppercase tracking-[0.2em] text-gold hover:text-gold-light transition-colors" dir="ltr">

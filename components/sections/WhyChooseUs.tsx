@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React from 'react';
 import Image from 'next/image';
@@ -30,7 +31,7 @@ const FEATURES = [
 ];
 
 export function WhyChooseUs() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   return (
@@ -47,10 +48,10 @@ export function WhyChooseUs() {
             viewport={{ once: true }}
           >
             <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold mb-4 block">
-              {isAr ? 'اكتشف فن الحلاوة الفاخرة' : 'Experience the Art of Dessert Excellence'}
+              {t('sections.experience_the_art_of_dessert')}
             </span>
             <h2 className="text-h2 text-text-primary">
-              {isAr ? 'لماذا تختار لينزا؟' : 'Why Choose Lenza'}
+              {t('sections.why_choose_lenza')}
             </h2>
           </motion.div>
         </div>

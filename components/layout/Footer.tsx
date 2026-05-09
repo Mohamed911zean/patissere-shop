@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React from 'react';
 import Link from 'next/link';
@@ -25,19 +26,19 @@ const SUPPORT_LINKS = [
 ];
 
 export function Footer() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   return (
-    <footer className={`bg-bg-deep border-t border-white/5 pt-24 pb-12 relative overflow-hidden ${isAr ? 'text-right' : ''}`}>
+    <footer className={`bg-bg-deep border-t border-white/5 pt-24 pb-12 relative overflow-hidden ${t('sections.')}`}>
       {/* Decorative Gradient Glow */}
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-full max-w-4xl h-48 bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container relative z-10">
-        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-20 ${isAr ? 'direction-rtl' : ''}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-20 ${t('sections.')}`}>
 
           {/* Column 1: Brand */}
-          <div className={`flex flex-col ${isAr ? 'items-end' : 'items-start'}`}>
+          <div className={`flex flex-col ${t('sections.items_start')}`}>
             <div className="relative w-44 h-16 mb-8 transition-transform duration-500 hover:scale-105">
               <Image
                 src="/logo.png"
@@ -48,9 +49,7 @@ export function Footer() {
               />
             </div>
             <p className="text-text-secondary text-sm leading-relaxed mb-10 max-w-xs font-light">
-              {isAr
-                ? 'نصنع ذكريات حلوة بشغف وتميز منذ أكثر من ١٢ عاماً — تجربة أرقى المعجنات في كل قضمة.'
-                : 'Crafting sweet memories with passion and excellence for over 12 years. Experience the finest pastries in every bite.'}
+              {t('sections.crafting_sweet_memories_with_p')}
             </p>
             <div className="flex gap-5">
               <a
@@ -81,9 +80,9 @@ export function Footer() {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className={isAr ? 'sm:pr-8 lg:pr-0' : 'sm:pl-8 lg:pl-0'}>
+          <div className={t('sections.sm_pl_8_lg_pl_0')}>
             <h4 className="text-text-primary font-bold mb-8 uppercase tracking-[0.2em] text-[11px]">
-              {isAr ? 'روابط سريعة' : 'Quick Links'}
+              {t('sections.quick_links')}
             </h4>
             <ul className="flex flex-col gap-5">
               {NAV_LINKS.map((link) => (
@@ -102,7 +101,7 @@ export function Footer() {
           {/* Column 3: Support */}
           <div>
             <h4 className="text-text-primary font-bold mb-8 uppercase tracking-[0.2em] text-[11px]">
-              {isAr ? 'الدعم' : 'Support'}
+              {t('sections.support')}
             </h4>
             <ul className="flex flex-col gap-5">
               {SUPPORT_LINKS.map((link) => (
@@ -121,7 +120,7 @@ export function Footer() {
           {/* Column 4: Contact */}
           <div>
             <h4 className="text-text-primary font-bold mb-8 uppercase tracking-[0.2em] text-[11px]">
-              {isAr ? 'اتصل بنا' : 'Contact Us'}
+              {t('sections.contact_us')}
             </h4>
             <ul className="flex flex-col gap-6">
               <li className="flex items-start gap-4 text-text-secondary text-sm group">
@@ -130,7 +129,7 @@ export function Footer() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase tracking-widest text-text-fade font-bold">
-                    {isAr ? 'اتصل بنا' : 'Call Us'}
+                    {t('sections.call_us')}
                   </span>
                   <a href="tel:0228434457" className="hover:text-gold transition-colors font-medium" dir="ltr">
                     0228434457
@@ -146,10 +145,10 @@ export function Footer() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase tracking-widest text-text-fade font-bold">
-                    {isAr ? 'مواقعنا' : 'Locations'}
+                    {t('sections.locations')}
                   </span>
                   <span className="font-medium">
-                    {isAr ? 'القاهرة والمنصورة، مصر' : 'Cairo & Mansoura, Egypt'}
+                    {t('sections.cairo_mansoura_egypt')}
                   </span>
                 </div>
               </li>
@@ -166,7 +165,7 @@ export function Footer() {
 >
   <p className="text-text-fade text-[11px] font-medium tracking-wider uppercase flex items-center gap-2 flex-wrap justify-center">
     © 2026 Lenza Sweets ·{" "}
-    {isAr ? "جميع الحقوق محفوظة" : "All Rights Reserved"}
+    {t('sections.all_rights_reserved')}
 
     <span className="text-white/20">|</span>
 
@@ -185,14 +184,14 @@ export function Footer() {
       href="/privacy-policy"
       className="text-text-fade hover:text-gold transition-colors text-[11px] font-bold uppercase tracking-widest"
     >
-      {isAr ? "الخصوصية" : "Privacy"}
+      {t('sections.privacy')}
     </Link>
 
     <Link
       href="/terms"
       className="text-text-fade hover:text-gold transition-colors text-[11px] font-bold uppercase tracking-widest"
     >
-      {isAr ? "الشروط" : "Terms"}
+      {t('sections.terms')}
     </Link>
   </div>
 </div>

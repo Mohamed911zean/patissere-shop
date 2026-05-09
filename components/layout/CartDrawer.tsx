@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useRef } from 'react';
 import Image from 'next/image';
@@ -11,7 +12,7 @@ import { cn } from '@/lib/utils';
 
 export function CartDrawer() {
   const { items, total, removeItem, updateQuantity, isCartOpen, setIsCartOpen } = useCart();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const [mounted, setMounted] = React.useState(false);
 
@@ -54,7 +55,7 @@ export function CartDrawer() {
   if (!mounted) return null;
 
   const slideDir = isAr ? { initial: '-100%', exit: '-100%' } : { initial: '100%', exit: '100%' };
-  const side = isAr ? 'left-0' : 'right-0';
+  const side = t('sections.right_0');
 
   return (
     <AnimatePresence>
@@ -97,7 +98,7 @@ export function CartDrawer() {
           >
             {/* ── Drag handle (mobile) ── */}
             <div
-              className={cn('absolute top-2 flex justify-center w-full sm:hidden', isAr ? 'left-0' : 'right-0 left-0')}
+              className={cn('absolute top-2 flex justify-center w-full sm:hidden', t('sections.right_0_left_0'))}
               onPointerDown={(e) => dragControls.start(e)}
             >
               <div className="w-10 h-1 rounded-full bg-white/15 cursor-grab active:cursor-grabbing" />
@@ -108,7 +109,7 @@ export function CartDrawer() {
               <div className="flex items-center gap-3">
                 <ShoppingBag className="w-5 h-5 text-gold" />
                 <h2 className="text-base font-display text-text-primary uppercase tracking-widest">
-                  {isAr ? 'سلة التسوق' : 'Your Cart'}
+                  {t('sections.your_cart')}
                 </h2>
                 <AnimatePresence>
                   {items.length > 0 && (
@@ -126,7 +127,7 @@ export function CartDrawer() {
               </div>
               <button
                 onClick={() => setIsCartOpen(false)}
-                aria-label={isAr ? 'إغلاق السلة' : 'Close cart'}
+                aria-label={t('sections.close_cart')}
                 className="w-9 h-9 rounded-full border border-border-subtle flex items-center justify-center text-text-muted hover:text-gold hover:border-gold/40 transition-all duration-300 active:scale-90"
               >
                 <X className="w-4 h-4" />
@@ -153,19 +154,17 @@ export function CartDrawer() {
                       <ShoppingBag className="w-9 h-9" />
                     </motion.div>
                     <h3 className="text-lg font-display text-text-primary mb-2">
-                      {isAr ? 'سلتك فارغة' : 'Your cart is empty'}
+                      {t('sections.your_cart_is_empty')}
                     </h3>
                     <p className="text-text-secondary text-sm mb-8 leading-relaxed max-w-[220px]">
-                      {isAr
-                        ? 'أضف بعض المعجنات الرائعة لتبدأ'
-                        : "Looks like you haven't added anything yet."}
+                      {t('sections.looks_like_you_haven_t_added_a')}
                     </p>
                     <Link
                       href="/shop"
                       onClick={() => setIsCartOpen(false)}
                       className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-gradient-to-r from-gold-light via-gold to-gold-dark text-text-on-gold text-[11px] font-black uppercase tracking-[0.18em] shadow-[0_4px_20px_rgba(212,169,79,0.3)] hover:shadow-[0_6px_28px_rgba(212,169,79,0.45)] transition-all duration-300 active:scale-95"
                     >
-                      {isAr ? 'تسوق الآن' : 'Start Shopping'}
+                      {t('sections.start_shopping')}
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </motion.div>
@@ -266,7 +265,7 @@ export function CartDrawer() {
                   <div className="px-5 pt-4 pb-2 space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-text-secondary text-[11px] uppercase tracking-widest font-bold">
-                        {isAr ? 'المجموع الفرعي' : 'Subtotal'}
+                        {t('sections.subtotal')}
                       </span>
                       <motion.span
                         key={total}
@@ -278,7 +277,7 @@ export function CartDrawer() {
                       </motion.span>
                     </div>
                     <p className="text-[10px] text-text-fade text-center uppercase tracking-wider">
-                      {isAr ? 'الضرائب والشحن تُحسب عند الدفع' : 'Taxes & shipping calculated at checkout'}
+                      {t('sections.taxes_shipping_calculated_at')}
                     </p>
                   </div>
 
@@ -302,7 +301,7 @@ export function CartDrawer() {
                         <div className="absolute top-0 -left-full w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-800" />
                       </div>
                       <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                      {isAr ? 'إتمام الطلب' : 'Proceed to Checkout'}
+                      {t('sections.proceed_to_checkout')}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
 
@@ -310,7 +309,7 @@ export function CartDrawer() {
                       onClick={() => setIsCartOpen(false)}
                       className="w-full h-11 rounded-xl text-[10px] uppercase tracking-[0.18em] font-bold text-text-muted hover:text-gold border border-gold-border/10 hover:border-gold-border/30 transition-all duration-300 active:scale-95"
                     >
-                      {isAr ? 'مواصلة التسوق' : 'Continue Shopping'}
+                      {t('sections.continue_shopping')}
                     </button>
                   </div>
                 </motion.div>

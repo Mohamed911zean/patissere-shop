@@ -7,7 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { LocationModal } from "@/components/layout/LocationModal";
 import { Toaster } from 'react-hot-toast';
-import "./globals.css";
+import "../globals.css";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -43,11 +43,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
+  params: { locale }
 }: Readonly<{
   children: React.ReactNode;
+  params: { locale: string };
 }>) {
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
   return (
-    <html lang="en" className={`${jost.variable} ${cormorant.variable} ${greatVibes.variable}`}>
+    <html lang={locale} dir={dir} className={`${jost.variable} ${cormorant.variable} ${greatVibes.variable}`}>
       <body className="antialiased bg-bg-base text-text-primary selection:bg-gold/30 selection:text-gold-light">
         <LanguageProvider>
           <LocationProvider>

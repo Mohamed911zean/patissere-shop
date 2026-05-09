@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React from 'react';
 import Image from 'next/image';
@@ -8,7 +9,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 
 export function ProductSpotlight() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   return (
@@ -22,7 +23,7 @@ export function ProductSpotlight() {
         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_2px_2px,rgba(212,169,79,1)_1px,transparent_0)] bg-[length:40px_40px]" />
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gold/10 blur-[150px] pointer-events-none" />
 
-        <div className={`flex flex-col lg:flex-row items-center h-full relative z-10 ${isAr ? 'lg:flex-row-reverse' : ''}`}>
+        <div className={`flex flex-col lg:flex-row items-center h-full relative z-10 ${t('sections.')}`}>
 
           {/* Text Section (يظهر تحت الصورة في الموبايل، وبجانبها في الديسكتوب) */}
           <div className={`flex-1 p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center text-center lg:text-start ${isAr ? 'lg:text-right' : 'lg:text-left'} order-2 lg:order-none`}>
@@ -33,29 +34,27 @@ export function ProductSpotlight() {
               viewport={{ once: true }}
             >
               {/* شارة (جديد) */}
-              <div className={`inline-block px-4 py-1.5 mb-6 rounded-full bg-[#1A3A31] border border-gold/30 text-gold text-xs md:text-sm font-bold uppercase tracking-widest shadow-inner ${isAr ? 'mr-auto lg:mr-0 lg:ml-auto' : 'mx-auto lg:mx-0'}`}>
-                {isAr ? 'وصل حديثاً من لينزا' : 'New From Lenza'}
+              <div className={`inline-block px-4 py-1.5 mb-6 rounded-full bg-[#1A3A31] border border-gold/30 text-gold text-xs md:text-sm font-bold uppercase tracking-widest shadow-inner ${t('sections.mx_auto_lg_mx_0')}`}>
+                {t('sections.new_from_lenza')}
               </div>
 
               {/* العنوان الرئيسي */}
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] drop-shadow-md">
-                {isAr ? 'كيكة الفصول' : 'Four Seasons'} <br />
+                {t('sections.four_seasons')} <br />
                 <span className="text-gold font-light italic font-serif tracking-normal">
-                  {isAr ? 'الأربعة' : 'Signature Cake'}
+                  {t('sections.signature_cake')}
                 </span>
               </h2>
 
               {/* نص تسويقي جذاب */}
               <p className="text-white/80 text-sm sm:text-base md:text-lg font-light max-w-lg mx-auto lg:mx-0 mb-10 leading-relaxed">
-                {isAr
-                  ? 'تحفة فنية تجمع بين تناقض الملمس والحرارة. طبقات من الكريمة الغنية تتخللها رقائق المعجنات الذهبية الهشة، لتأخذ حواسك في رحلة لا تُنسى مع كل قضمة.'
-                  : 'A masterpiece of textures and temperatures. Rich, creamy perfection layered with delicate, golden, crunchy pastry. A sensory journey in every bite.'}
+                {t('sections.a_masterpiece_of_textures_and')}
               </p>
 
               {/* الزرار (Call to Action) */}
               <Link href="/products/four-season-cake" className="inline-flex group">
                 <div className="flex items-center gap-4 bg-gold hover:bg-white text-black px-8 py-4 rounded-full font-bold transition-all duration-500 shadow-[0_10px_20px_-10px_rgba(212,169,79,0.8)] hover:shadow-[0_15px_30px_-10px_rgba(255,255,255,0.8)] hover:-translate-y-1">
-                  <span className="text-sm md:text-base uppercase tracking-widest">{isAr ? 'جربها الآن' : 'Try It Now'}</span>
+                  <span className="text-sm md:text-base uppercase tracking-widest">{t('sections.try_it_now')}</span>
                   {isAr 
                     ? <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" /> 
                     : <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
@@ -71,7 +70,7 @@ export function ProductSpotlight() {
             {/* الختم الدائري الدوار (The Circular Spinning Stamp) */}
            <div
   className={`absolute top-0 md:top-8 ${
-    isAr ? "right-4 md:right-8" : "left-4 md:left-8"
+    t('sections.left_4_md_left_8')
   } z-20 w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#2A1E14] border border-gold/20 text-gold flex items-center justify-center shadow-2xl animate-[spin_15s_linear_infinite]`}
 >
   <svg
@@ -90,18 +89,16 @@ export function ProductSpotlight() {
         isAr ? "text-[15px]" : "text-[14px] tracking-[2px]"
       }`}
       style={{
-        fontFamily: isAr ? "Cairo, sans-serif" : "inherit",
+        fontFamily: t('sections.inherit'),
       }}
     >
       <textPath
         href="#circlePath"
-        startOffset={isAr ? "100%" : "0%"}
-        textAnchor={isAr ? "start" : "middle"}
+        startOffset={t('sections.0')}
+        textAnchor={t('sections.middle')}
         direction={isAr ? "rtl" : "ltr"}
       >
-        {isAr
-          ? "لا يقاوم • لا يقاوم • لا يقاوم  •  لا يقاوم • "
-          : "• SIMPLY IRRESISTIBLE • SIMPLY IRRESISTIBLE •"}
+        {t('sections.simply_irresistible_simply')}
       </textPath>
     </text>
   </svg>

@@ -12,32 +12,44 @@ interface LanguageContextType {
 
 import '../i18n';
 import { useTranslation } from 'react-i18next';
+import { useRouter, usePathname } from 'next/navigation';
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en');
+  const router = useRouter();
+  const currentPathname = usePathname();
+  const pathnameLocale = currentPathname?.split('/')[1];
+  const activeLocale = (pathnameLocale === 'ar' || pathnameLocale === 'en') ? pathnameLocale : 'en';
+
+  const [language, setLanguageState] = useState<Language>(activeLocale as Language);
 
   const { t: i18nT, i18n } = useTranslation();
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('lang') as Language;
-    if (savedLang) {
-      setLanguage(savedLang);
-      i18n.changeLanguage(savedLang);
-    } else {
-      setLanguage(i18n.language as Language || 'en');
+    // Keep internal state synced if URL changes
+    if (activeLocale !== language) {
+      setLanguageState(activeLocale as Language);
     }
-  }, [i18n]);
+    if (i18n.language !== activeLocale) {
+      i18n.changeLanguage(activeLocale);
+    }
+  }, [activeLocale, language, i18n]);
 
-  useEffect(() => {
-    document.documentElement.lang = language;
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    localStorage.setItem('lang', language);
-    if (i18n.language !== language) {
-      i18n.changeLanguage(language);
+  const setLanguage = (newLocale: Language) => {
+    if (newLocale === language) return;
+    
+    const days = 30;
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `NEXT_LOCALE=${newLocale};expires=${date.toUTCString()};path=/`;
+
+    if (activeLocale === 'en' && newLocale === 'ar') {
+      router.push('/ar' + (currentPathname === '/en' ? '' : currentPathname.replace('/en', '')));
+    } else if (activeLocale === 'ar' && newLocale === 'en') {
+      router.push(currentPathname.replace('/ar', '') || '/');
     }
-  }, [language, i18n]);
+  };
 
   const t = (key: string, options?: any) => {
     return i18nT(key, options) as string;

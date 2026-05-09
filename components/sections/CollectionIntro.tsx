@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
@@ -108,7 +109,7 @@ function ArrowIcon({ flip }: { flip?: boolean }) {
 }
 
 export function CollectionIntro() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { addItem } = useCart();
   const isAr = language === 'ar';
   const [activeCategory, setActiveCategory] = useState('All');
@@ -157,10 +158,10 @@ export function CollectionIntro() {
             viewport={{ once: true }}
           >
             <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold mb-4 block">
-              {isAr ? 'تشكيلة لينزا' : 'Lenza Collection'}
+              {t('sections.lenza_collection')}
             </span>
             <h2 className="text-h2 text-text-primary">
-              {isAr ? 'انغمس في عالم من النكهات' : 'Indulge in a World of Flavors'}
+              {t('sections.indulge_in_a_world_of_flavors')}
             </h2>
           </motion.div>
         </div>
@@ -245,21 +246,21 @@ export function CollectionIntro() {
                       {/* Status badge */}
                       <div className={cn(
                         'absolute top-2.5 flex',
-                        isAr ? 'right-2.5' : 'left-2.5'
+                        t('sections.left_2_5')
                       )}>
                         {product.available === false ? (
                           <span className="flex items-center gap-1 bg-red-500 text-white
                                            text-[9px] font-bold px-2 py-1 rounded-full
                                            uppercase tracking-wide leading-none">
                             <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
-                            {isAr ? 'نفذ' : 'Out of Stock'}
+                            {t('sections.out_of_stock')}
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 bg-emerald-500/90 text-white
                                            text-[9px] font-bold px-2 py-1 rounded-full
                                            uppercase tracking-wide leading-none backdrop-blur-sm">
                             <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
-                            {isAr ? 'متاح' : 'Available'}
+                            {t('sections.available')}
                           </span>
                         )}
                       </div>
@@ -272,7 +273,7 @@ export function CollectionIntro() {
                           'bg-black/25 backdrop-blur-sm border border-white/15',
                           'flex items-center justify-center',
                           'hover:bg-black/50 active:scale-95 transition-all duration-200',
-                          isAr ? 'left-2.5' : 'right-2.5'
+                          t('sections.right_2_5')
                         )}
                       >
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
@@ -313,7 +314,7 @@ export function CollectionIntro() {
                                 className="flex items-center gap-1"
                               >
                                 <Check className="w-3 h-3" />
-                                {isAr ? 'أضيف!' : 'Added!'}
+                                {t('sections.added')}
                               </motion.span>
                             ) : (
                               <motion.span
@@ -324,7 +325,7 @@ export function CollectionIntro() {
                                 className="flex items-center gap-1"
                               >
                                 <ShoppingBag className="w-3 h-3" />
-                                {isAr ? 'أضف للسلة' : 'Quick Add'}
+                                {t('sections.quick_add')}
                               </motion.span>
                             )}
                           </AnimatePresence>
@@ -366,7 +367,7 @@ export function CollectionIntro() {
                             handleQuickAdd(e, product);
                           }}
                           disabled={product.available === false}
-                          aria-label={isAr ? `أضف ${product.nameAr} للسلة` : `Add ${product.nameEn} to cart`}
+                          aria-label={t('sections.add_product_nameen_to_cart')}
                           className={cn(
                             'w-8 h-8 rounded-full shrink-0',
                             'flex items-center justify-center',
@@ -437,7 +438,7 @@ export function CollectionIntro() {
                 'flex items-center justify-center gap-2'
               )}
             >
-              {isAr ? 'عرض المزيد' : 'Show More'}
+              {t('sections.show_more')}
               <ArrowIcon flip={isAr} />
             </Button>
           </Link>

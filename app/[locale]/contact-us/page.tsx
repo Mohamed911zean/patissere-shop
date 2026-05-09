@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -9,7 +10,7 @@ import { CheckCircle2, Loader2, Phone, MapPin, Clock } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function ContactUsPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [message, setMessage] = useState('');
@@ -49,7 +50,7 @@ export default function ContactUsPage() {
 
   return (
     <>
-      <div className={`bg-bg-base pt-24 pb-32 relative overflow-hidden ${isAr ? 'text-right' : ''}`}>
+      <div className={`bg-bg-base pt-24 pb-32 relative overflow-hidden ${t('sections.')}`}>
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-gold/5 to-transparent pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -58,15 +59,13 @@ export default function ContactUsPage() {
           <div className="text-center mb-20">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
               <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] text-gold mb-4">
-                {isAr ? 'اتصل بنا' : 'Contact Us'}
+                {t('sections.contact_us')}
               </h2>
               <h1 className="text-h1 text-text-primary mb-6 italic font-display">
-                {isAr ? 'نسعد بتواصلك معنا' : "Let's Keep In Touch"}
+                {t('sections.let_s_keep_in_touch')}
               </h1>
               <p className="text-text-secondary max-w-xl mx-auto font-light leading-relaxed">
-                {isAr
-                  ? 'اترك استفسارك وسيتواصل معك فريقنا في أقرب وقت ممكن.'
-                  : 'Leave your inquiries and our team will contact you shortly to assist with your request.'}
+                {t('sections.leave_your_inquiries_and_our_t')}
               </p>
             </motion.div>
           </div>
@@ -121,15 +120,13 @@ export default function ContactUsPage() {
                     <CheckCircle2 className="w-12 h-12" />
                   </div>
                   <h3 className="text-3xl font-display text-text-primary mb-4">
-                    {isAr ? 'تم إرسال رسالتك' : 'Message Sent'}
+                    {t('sections.message_sent')}
                   </h3>
                   <p className="text-text-secondary mb-10 font-light">
-                    {isAr
-                      ? 'استلمنا استفسارك وسنتواصل معك قريباً.'
-                      : "We've received your inquiry and we'll be in touch soon."}
+                    {t('sections.we_ve_received_your_inquiry_an')}
                   </p>
                   <Button variant="outline" className="px-12" onClick={() => setStatus('idle')}>
-                    {isAr ? 'إرسال رسالة أخرى' : 'Send Another Message'}
+                    {t('sections.send_another_message')}
                   </Button>
                 </motion.div>
               ) : (
@@ -143,43 +140,43 @@ export default function ContactUsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                       <label className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold">
-                        {isAr ? 'الاسم الأول' : 'First Name'}
+                        {t('sections.first_name')}
                       </label>
                       <input
                         type="text"
                         required
                         className="w-full bg-bg-elevated/50 border border-gold-border/10 rounded-2xl px-6 py-4 text-text-primary focus:outline-none focus:border-gold transition-all duration-300 hover:border-gold-border/30"
-                        placeholder={isAr ? 'محمد' : 'John'}
+                        placeholder={t('sections.john')}
                       />
                     </div>
                     <div className="space-y-3">
                       <label className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold">
-                        {isAr ? 'اسم العائلة' : 'Last Name'}
+                        {t('sections.last_name')}
                       </label>
                       <input
                         type="text"
                         required
                         className="w-full bg-bg-elevated/50 border border-gold-border/10 rounded-2xl px-6 py-4 text-text-primary focus:outline-none focus:border-gold transition-all duration-300 hover:border-gold-border/30"
-                        placeholder={isAr ? 'أحمد' : 'Doe'}
+                        placeholder={t('sections.doe')}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <label className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold">
-                      {isAr ? 'البريد الإلكتروني' : 'Email Address'}
+                      {t('sections.email_address')}
                     </label>
                     <input
                       type="email"
                       required
                       className="w-full bg-bg-elevated/50 border border-gold-border/10 rounded-2xl px-6 py-4 text-text-primary focus:outline-none focus:border-gold transition-all duration-300 hover:border-gold-border/30"
-                      placeholder={isAr ? 'example@email.com' : 'john@example.com'}
+                      placeholder={t('sections.john_example_com')}
                     />
                   </div>
 
                   <div className="space-y-3">
                     <label className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold">
-                      {isAr ? 'رقم الهاتف' : 'Mobile Number'}
+                      {t('sections.mobile_number')}
                     </label>
                     <input
                       type="tel"
@@ -193,7 +190,7 @@ export default function ContactUsPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <label className="text-[10px] uppercase tracking-[0.2em] text-text-fade font-bold">
-                        {isAr ? 'رسالتك' : 'Your Message'}
+                        {t('sections.your_message')}
                       </label>
                       <span className="text-[9px] text-text-fade font-bold tracking-widest">{message.length}/150</span>
                     </div>
@@ -203,7 +200,7 @@ export default function ContactUsPage() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       className="w-full bg-bg-elevated/50 border border-gold-border/10 rounded-2xl px-6 py-4 text-text-primary focus:outline-none focus:border-gold transition-all duration-300 hover:border-gold-border/30 min-h-[150px] resize-none"
-                      placeholder={isAr ? 'كيف يمكننا مساعدتك؟' : 'How can we help you?'}
+                      placeholder={t('sections.how_can_we_help_you')}
                     />
                   </div>
 
@@ -216,10 +213,10 @@ export default function ContactUsPage() {
                     {status === 'loading' ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin mr-3" />
-                        {isAr ? 'جارٍ الإرسال...' : 'Processing...'}
+                        {t('sections.processing')}
                       </>
                     ) : (
-                      isAr ? 'إرسال الرسالة' : 'Send Message'
+                      t('sections.send_message')
                     )}
                   </Button>
                 </motion.form>

@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from 'react-i18next';
 
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
@@ -66,7 +67,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export function LegacyStats() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
   return (
@@ -92,10 +93,10 @@ export function LegacyStats() {
             viewport={{ once: true }}
           >
             <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold mb-4 block">
-              {isAr ? 'نصنع الحلويات بشغف منذ أكثر من ١٢ عاماً' : 'Crafting Desserts With Passion For Over 12 Years.'}
+              {t('sections.crafting_desserts_with_passion')}
             </span>
             <h2 className="text-h2 text-text-primary">
-              {isAr ? 'إرث من التميز الحلو' : 'Legacy of Sweet Excellence'}
+              {t('sections.legacy_of_sweet_excellence')}
             </h2>
           </motion.div>
         </div>
