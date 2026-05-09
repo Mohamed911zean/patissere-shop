@@ -6,6 +6,7 @@ import { LocationProvider } from "@/context/LocationContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { LocationModal } from "@/components/layout/LocationModal";
+import { Toaster } from 'react-hot-toast';
 import "./globals.css";
 
 const jost = Jost({
@@ -57,6 +58,16 @@ export default function RootLayout({
               <main>
                 {children}
               </main>
+              <Toaster 
+                position="bottom-center" 
+                toastOptions={{
+                  style: {
+                    background: '#0b0501',
+                    color: '#fefcf8',
+                    border: '1px solid rgba(212, 169, 79, 0.2)',
+                  },
+                }}
+              />
             </CartProvider>
           </LocationProvider>
         </LanguageProvider>

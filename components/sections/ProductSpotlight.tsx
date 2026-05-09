@@ -69,16 +69,43 @@ export function ProductSpotlight() {
           <div className="flex-1 w-full relative min-h-[350px] md:min-h-[450px] lg:min-h-[600px] flex items-center justify-center order-1 lg:order-none p-10 lg:p-0">
             
             {/* الختم الدائري الدوار (The Circular Spinning Stamp) */}
-            <div className={`absolute top-0 md:top-8 ${isAr ? 'right-4 md:right-8' : 'left-4 md:left-8'} z-20 w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#2A1E14] border border-gold/20 text-gold flex items-center justify-center shadow-2xl animate-[spin_15s_linear_infinite]`}>
-              <svg viewBox="0 0 100 100" className="w-[85%] h-[85%] overflow-visible">
-                <path id="textPath" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent" />
-                <text className="text-[14px] font-black tracking-widest uppercase fill-gold">
-                  <textPath href="#textPath" startOffset="0%">
-                    • SIMPLY IRRESISTIBLE • SIMPLY IRRESISTIBLE
-                  </textPath>
-                </text>
-              </svg>
-            </div>
+           <div
+  className={`absolute top-0 md:top-8 ${
+    isAr ? "right-4 md:right-8" : "left-4 md:left-8"
+  } z-20 w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#2A1E14] border border-gold/20 text-gold flex items-center justify-center shadow-2xl animate-[spin_15s_linear_infinite]`}
+>
+  <svg
+    viewBox="0 0 100 100"
+    className="w-[85%] h-[85%] overflow-visible"
+  >
+    <defs>
+      <path
+        id="circlePath"
+        d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"
+      />
+    </defs>
+
+    <text
+      className={`fill-gold font-black ${
+        isAr ? "text-[15px]" : "text-[14px] tracking-[2px]"
+      }`}
+      style={{
+        fontFamily: isAr ? "Cairo, sans-serif" : "inherit",
+      }}
+    >
+      <textPath
+        href="#circlePath"
+        startOffset={isAr ? "100%" : "0%"}
+        textAnchor={isAr ? "start" : "middle"}
+        direction={isAr ? "rtl" : "ltr"}
+      >
+        {isAr
+          ? "لا يقاوم • لا يقاوم • لا يقاوم  •  لا يقاوم • "
+          : "• SIMPLY IRRESISTIBLE • SIMPLY IRRESISTIBLE •"}
+      </textPath>
+    </text>
+  </svg>
+</div>
 
             {/* صورة الكيكة (يُفضل استخدام صورة شفافة PNG) */}
            {/* صورة الكيكة (يُفضل استخدام صورة شفافة PNG) */}

@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, ChevronRight, ChevronLeft, Calendar, Wand2, Sparkles, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 const OCCASIONS = [
   { en: 'Birthday', ar: 'عيد ميلاد', image: '/cake/heart-cake.jpg', descEn: 'Celebrate another beautiful year', descAr: 'احتفل بعام آخر جميل' },
@@ -36,6 +38,7 @@ const SIZES = [
 export default function SpecialCakesPage() {
   const { language } = useLanguage();
   const isAr = language === 'ar';
+  const router = useRouter();
   
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
@@ -61,6 +64,11 @@ export default function SpecialCakesPage() {
     setTimeout(() => {
       nextStep();
     }, 400); // slight delay for user to see selection
+  };
+
+  const handleSubmit = () => {
+    toast.success(isAr ? 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.' : 'Your inquiry has been sent successfully! We will contact you soon.');
+    router.push('/');
   };
 
   const variants = {
@@ -424,7 +432,7 @@ export default function SpecialCakesPage() {
                   </div>
 
                   <div className="relative z-10 space-y-6">
-                    <Button variant="gold" className="w-full h-16 text-[18px] uppercase tracking-[0.3em] font-black shadow-[0_0_30px_rgba(212,169,79,0.3)]">
+                    <Button onClick={handleSubmit} variant="gold" className="w-full h-16 text-[18px] uppercase tracking-[0.3em] font-black shadow-[0_0_30px_rgba(212,169,79,0.3)]">
                       {isAr ? 'إرسال لطهاتنا' : 'Submit to Chefs'}
                     </Button>
                     <button onClick={prevStep} className="w-full text-[18px] uppercase tracking-[0.2em] font-black text-text-muted hover:text-gold transition-colors">
