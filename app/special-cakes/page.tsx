@@ -1,351 +1,456 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Footer } from '@/components/layout/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ChevronRight, ChevronLeft, Calendar, User, MessageSquare, Palette } from 'lucide-react';
+import { CheckCircle2, ChevronRight, ChevronLeft, Calendar, Wand2, Sparkles, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 const OCCASIONS = [
-  { name: 'Birthday Cakes', image: '/cake/heart-cake.jpg' },
-  { name: 'Wedding Cakes', image: '/cake/royal-cake.png' },
-  { name: 'Engagement Cakes', image: '/cake/vadge.jpg' },
-  { name: 'Character Cakes', image: '/cake/oreo-cake.jpg' },
+  { en: 'Birthday', ar: 'عيد ميلاد', image: '/cake/heart-cake.jpg', descEn: 'Celebrate another beautiful year', descAr: 'احتفل بعام آخر جميل' },
+  { en: 'Wedding', ar: 'زفاف', image: '/cake/royal-cake.png', descEn: 'A masterpiece for your special day', descAr: 'تحفة فنية ليومك الخاص' },
+  { en: 'Engagement', ar: 'خطوبة', image: '/cake/vadge.jpg', descEn: 'Mark the beginning of forever', descAr: 'بداية الأبدية' },
+  { en: 'Custom Character', ar: 'شخصيات', image: '/cake/oreo-cake.jpg', descEn: 'Bring imaginations to life', descAr: 'خيال ينبض بالحياة' },
 ];
 
-const FLAVORS = ['Vanilla', 'Chocolate', 'Red Velvet', 'Carrot', 'Lotus', 'Nutella', 'Strawberry'];
-const SIZES = ['10 Persons', '20 Persons', '30 Persons', '50+ Persons'];
+const FLAVORS = [
+  { en: 'Madagascar Vanilla', ar: 'فانيليا مدغشقر' },
+  { en: 'Belgian Chocolate', ar: 'شوكولاتة بلجيكية' },
+  { en: 'Red Velvet', ar: 'ريد فيلفيت' },
+  { en: 'Spiced Carrot', ar: 'جزر بالتوابل' },
+  { en: 'Lotus Biscoff', ar: 'لوتس بيسكوف' },
+  { en: 'Rich Nutella', ar: 'نوتيلا غنية' },
+  { en: 'Wild Strawberry', ar: 'فراولة برية' }
+];
+
+const SIZES = [
+  { en: 'Intimate (10 Pax)', ar: 'مقربين (١٠ أشخاص)', descEn: 'Perfect for small close gatherings' },
+  { en: 'Gathering (20 Pax)', ar: 'تجمع (٢٠ شخص)', descEn: 'Ideal for family and friends' },
+  { en: 'Celebration (30 Pax)', ar: 'احتفال (٣٠ شخص)', descEn: 'A grand statement piece' },
+  { en: 'Grand (50+ Pax)', ar: 'ضخم (+٥٠ شخص)', descEn: 'Majestic tier design for large events' }
+];
 
 export default function SpecialCakesPage() {
-  const [step, setStep] = useState(1);
+  const { language } = useLanguage();
+  const isAr = language === 'ar';
+  
+  const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
     occasion: '',
     size: '',
     flavor: '',
-    message: '',
     colorTheme: '',
-    character: '',
+    message: '',
     deliveryDate: '',
+    phoneNumber: '',
   });
 
   const updateForm = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const nextStep = () => setStep(prev => Math.min(prev + 1, 5));
+  const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
+
+  // Auto-advance logic for single-click selections
+  const handleSelection = (field: string, value: string) => {
+    updateForm(field, value);
+    setTimeout(() => {
+      nextStep();
+    }, 400); // slight delay for user to see selection
+  };
+
+  const variants = {
+    initial: { opacity: 0, y: 40, filter: 'blur(10px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+    exit: { opacity: 0, y: -40, filter: 'blur(10px)', transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
     <>
-      <div className="bg-bg-base relative overflow-hidden pt-10 pb-32">
+      <div className="bg-bg-base relative min-h-screen pt-24 pb-20 flex flex-col justify-center overflow-hidden">
         {/* Background Ambient Glows */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gold/5 blur-[140px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
-
-        {/* Hero Section */}
-        <div className="relative h-[550px] flex items-center justify-center mb-32 overflow-hidden">
-          <Image
-            src="/hero-section.png"
-            alt="Special Cakes"
-            fill
-            className="object-cover opacity-20 scale-110"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-base/40 via-bg-base/80 to-bg-base" />
-          <div className="container relative z-10 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <span className="text-script text-gold text-5xl mb-6 block drop-shadow-lg">Artisanal Customization</span>
-              <h1 className="text-h1 text-text-primary uppercase tracking-[0.2em] font-display mb-8">
-                Your <span className="text-gold">Dream</span> Cake
-              </h1>
-              <div className="w-24 h-[1px] bg-gold/30 mx-auto" />
-            </motion.div>
-          </div>
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gold/5 blur-[150px] rounded-full" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full" />
         </div>
 
-        <div className="container relative z-10">
-          {/* Occasion Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-32">
-            {OCCASIONS.map((occ, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: i * 0.1 }}
-                className="relative h-[450px] group rounded-[2.5rem] overflow-hidden cursor-pointer border border-gold-border/10 shadow-card hover:border-gold-border/30 transition-all duration-700"
-              >
-                <Image
-                  src={occ.image}
-                  alt={occ.name}
-                  fill
-                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/20 to-transparent opacity-80" />
-                <div className="absolute bottom-10 left-10 right-10 flex justify-between items-end">
-                  <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-3xl font-display text-text-primary mb-4 group-hover:text-gold transition-colors">{occ.name}</h3>
-                    <Button variant="gold" size="sm" className="shadow-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      Explore Designs
-                    </Button>
+        {/* Step Indicator */}
+        {step > 0 && step < 5 && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="container relative z-20 mb-8 sm:mb-16 flex justify-center"
+          >
+            <div className="flex items-center gap-3">
+              {[1, 2, 3, 4].map(s => (
+                <div key={s} className="flex items-center">
+                  <div 
+                    className={cn(
+                      "h-1.5 transition-all duration-700 rounded-full",
+                      step === s ? "bg-gold w-12 shadow-[0_0_12px_rgba(212,169,79,0.5)]" : step > s ? "bg-gold/50 w-6" : "bg-gold-border/20 w-4"
+                    )} 
+                  />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        <div className="container relative z-10 flex-1 flex flex-col justify-center">
+          <AnimatePresence mode="wait">
+            
+            {/* ── STEP 0: LANDING ── */}
+            {step === 0 && (
+              <motion.div key="step0" variants={variants} initial="initial" animate="animate" exit="exit" className="text-center max-w-4xl mx-auto">
+                <div className="relative w-32 h-32 mx-auto mb-8">
+                  <div className="absolute inset-0 bg-gold/20 rounded-full blur-2xl animate-pulse" />
+                  <div className="relative w-full h-full bg-bg-card/50 backdrop-blur-xl border border-gold-border/20 rounded-full flex items-center justify-center">
+                    <Wand2 className="w-12 h-12 text-gold" />
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Custom Order Form */}
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">Commission a Masterpiece</span>
-                <h2 className="text-h2 text-text-primary uppercase tracking-[0.1em] font-display">Custom Order Inquiry</h2>
                 
-                <div className="flex items-center justify-center gap-6 mt-12">
-                  {[1, 2, 3].map((s) => (
-                    <div key={s} className="flex items-center">
-                      <div className={cn(
-                        "w-14 h-14 rounded-full flex items-center justify-center font-display text-xl transition-all duration-700 border-2",
-                        step >= s 
-                          ? "bg-gold border-gold text-text-on-gold shadow-gold scale-110" 
-                          : "bg-bg-card/50 text-text-fade border-gold-border/10 backdrop-blur-md"
-                      )}>
-                        {step > s ? <CheckCircle2 className="w-7 h-7" /> : `0${s}`}
+                <span className="text-script text-gold text-4xl sm:text-6xl mb-4 sm:mb-6 block drop-shadow-lg">
+                  {isAr ? 'تجربة استثنائية' : 'A Bespoke Experience'}
+                </span>
+                <h1 className="text-4xl sm:text-7xl text-text-primary uppercase tracking-[0.15em] sm:tracking-[0.2em] font-display mb-8 leading-tight">
+                  {isAr ? (
+                    <>اصنع <span className="text-gold">تحفتك</span> الفنية</>
+                  ) : (
+                    <>Craft Your <br className="hidden sm:block" /> <span className="text-gold">Masterpiece</span></>
+                  )}
+                </h1>
+                <p className="text-text-secondary text-sm sm:text-base tracking-widest max-w-2xl mx-auto mb-12 leading-relaxed">
+                  {isAr 
+                    ? 'رحلة مخصصة لتصميم كيكة تعكس ذوقك الرفيع. طهاتنا في انتظار رؤيتك ليحولوها إلى واقع مذهل.' 
+                    : 'A personalized journey to design a cake that reflects your exquisite taste. Our master chefs await your vision to bring it to stunning reality.'}
+                </p>
+                
+                <Button variant="gold" className="h-16 px-12 text-[11px] uppercase tracking-[0.3em] font-black shadow-[0_0_40px_rgba(212,169,79,0.3)] group" onClick={nextStep}>
+                  {isAr ? 'ابدأ الرحلة' : 'Begin the Journey'} <Sparkles className="w-4 h-4 ml-3 transition-transform duration-500 group-hover:rotate-12" />
+                </Button>
+              </motion.div>
+            )}
+
+            {/* ── STEP 1: OCCASION ── */}
+            {step === 1 && (
+              <motion.div key="step1" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-6xl mx-auto w-full">
+                <div className="text-center mb-10 sm:mb-16">
+                  <span className="text-[18px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
+                    {isAr ? '1' : '1'}
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
+                    {isAr ? 'ماذا نحتفل؟' : 'What are we celebrating?'}
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {OCCASIONS.map((occ, i) => (
+                    <motion.div
+                      key={occ.en}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1, duration: 0.5 }}
+                      onClick={() => handleSelection('occasion', occ.en)}
+                      className={cn(
+                        "relative h-[200px] sm:h-[320px] group rounded-3xl overflow-hidden cursor-pointer border transition-all duration-500",
+                        formData.occasion === occ.en 
+                          ? "border-gold shadow-[0_0_30px_rgba(212,169,79,0.4)] scale-[1.02]" 
+                          : "border-gold-border/10 hover:border-gold/50 hover:shadow-card"
+                      )}
+                    >
+                      <Image src={occ.image} alt={occ.en} fill className="object-cover transition-transform duration-1000 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/40 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-70" />
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <h3 className="text-xl sm:text-2xl font-display text-gold mb-2   transition-colors">{isAr ? occ.ar : occ.en}</h3>
+                        <p className="text-[15px] sm:text-xs  tracking-wider  transition-all duration-500">
+                          {isAr ? occ.descAr : occ.descEn}
+                        </p>
                       </div>
-                      {s < 3 && (
-                        <div className="w-16 h-[1px] mx-2 relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gold-border/20" />
-                          <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: step > s ? "100%" : "0%" }}
-                            className="absolute inset-0 bg-gold transition-all duration-1000"
-                          />
+                      
+                      {formData.occasion === occ.en && (
+                        <div className="absolute top-4 right-4 w-8 h-8 bg-gold rounded-full flex items-center justify-center text-text-on-gold">
+                          <CheckCircle2 className="w-5 h-5" />
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </motion.div>
-            </div>
+            )}
 
-            <motion.div 
-              layout
-              className="bg-bg-card/40 backdrop-blur-xl border border-gold-border/10 rounded-[3rem] p-10 md:p-16 shadow-card relative overflow-hidden"
-            >
-              {/* Form decorative element */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+            {/* ── STEP 2: SIZE ── */}
+            {step === 2 && (
+              <motion.div key="step2" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-4xl mx-auto w-full">
+                <div className="text-center mb-10 sm:mb-16">
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
+                    {isAr ? 'الفصل الثاني' : 'Chapter II'}
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
+                    {isAr ? 'ما حجم الاحتفال؟' : 'How grand is the celebration?'}
+                  </h2>
+                </div>
 
-              <AnimatePresence mode="wait">
-                {step === 1 && (
-                  <motion.div
-                    key="step1"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="space-y-10"
-                  >
-                    <div className="space-y-6">
-                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,169,79,0.6)]" />
-                        Occasion Type
-                      </label>
-                      <select 
-                        className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-8 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 appearance-none cursor-pointer hover:border-gold-border/40"
-                        onChange={(e) => updateForm('occasion', e.target.value)}
-                        value={formData.occasion}
-                      >
-                        <option value="" className="bg-bg-card">Select Occasion</option>
-                        {OCCASIONS.map(o => <option key={o.name} value={o.name} className="bg-bg-card">{o.name}</option>)}
-                      </select>
-                    </div>
-
-                    <div className="space-y-6">
-                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,169,79,0.6)]" />
-                        Cake Size / Servings
-                      </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        {SIZES.map(s => (
-                          <button
-                            key={s}
-                            onClick={() => updateForm('size', s)}
-                            className={cn(
-                              "px-4 py-4 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all duration-500",
-                              formData.size === s 
-                                ? "bg-gold border-gold text-text-on-gold shadow-gold scale-105" 
-                                : "border-gold-border/10 text-text-secondary hover:border-gold/40 hover:bg-gold/5"
-                            )}
-                          >
-                            {s}
-                          </button>
-                        ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  {SIZES.map((size, i) => (
+                    <motion.button
+                      key={size.en}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.1, duration: 0.5 }}
+                      onClick={() => handleSelection('size', size.en)}
+                      className={cn(
+                        "p-6 sm:p-8 rounded-3xl border text-left transition-all duration-500 relative overflow-hidden group",
+                        formData.size === size.en 
+                          ? "bg-gold border-gold text-text-on-gold shadow-[0_0_30px_rgba(212,169,79,0.3)] scale-[1.02]" 
+                          : "bg-bg-card/40 backdrop-blur-xl border-gold-border/10 text-text-secondary hover:border-gold/50 hover:bg-gold/5"
+                      )}
+                    >
+                      <div className="relative z-10 flex justify-between items-center">
+                        <div>
+                          <h3 className={cn("text-lg sm:text-xl font-display mb-2", formData.size === size.en ? "text-text-on-gold" : "text-text-primary")}>
+                            {isAr ? size.ar : size.en}
+                          </h3>
+                          <p className={cn("text-[10px] sm:text-xs tracking-wider", formData.size === size.en ? "text-text-on-gold/80" : "text-text-fade")}>
+                            {isAr ? size.descEn /* (Translate dynamically if needed, keeping descEn for layout) */ : size.descEn}
+                          </p>
+                        </div>
+                        <div className={cn(
+                          "w-10 h-10 rounded-full border flex items-center justify-center transition-colors",
+                          formData.size === size.en ? "border-text-on-gold/30 bg-text-on-gold/10" : "border-gold-border/20 group-hover:border-gold/50"
+                        )}>
+                          {formData.size === size.en ? <CheckCircle2 className="w-5 h-5" /> : <div className="w-2 h-2 rounded-full bg-gold/50 group-hover:bg-gold" />}
+                        </div>
                       </div>
-                    </div>
+                    </motion.button>
+                  ))}
+                </div>
 
-                    <div className="space-y-6">
-                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,169,79,0.6)]" />
-                        Flavor Selection
-                      </label>
-                      <div className="flex flex-wrap gap-4">
-                        {FLAVORS.map(f => (
-                          <button
-                            key={f}
-                            onClick={() => updateForm('flavor', f)}
-                            className={cn(
-                              "px-6 py-4 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all duration-500",
-                              formData.flavor === f 
-                                ? "bg-gold border-gold text-text-on-gold shadow-gold scale-105" 
-                                : "border-gold-border/10 text-text-secondary hover:border-gold/40 hover:bg-gold/5"
-                            )}
-                          >
-                            {f}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                <div className="mt-12 flex justify-center">
+                  <button onClick={prevStep} className="text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold transition-colors flex items-center group">
+                    <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {isAr ? 'العودة' : 'Go Back'}
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-                    <div className="pt-6">
-                      <Button variant="gold" className="w-full h-16 text-[11px] uppercase tracking-[0.3em] font-black shadow-gold group" onClick={() => setStep(2)}>
-                        Next Step <ChevronRight className="w-4 h-4 ml-3 transition-transform duration-500 group-hover:translate-x-1" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
+            {/* ── STEP 3: FLAVOR ── */}
+            {step === 3 && (
+              <motion.div key="step3" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-4xl mx-auto w-full">
+                <div className="text-center mb-10 sm:mb-16">
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
+                    {isAr ? 'الفصل الثالث' : 'Chapter III'}
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
+                    {isAr ? 'اختر جوهر المذاق' : 'Choose the essence.'}
+                  </h2>
+                </div>
 
-                {step === 2 && (
-                  <motion.div
-                    key="step2"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="space-y-10"
-                  >
-                    <div className="space-y-6">
-                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,169,79,0.6)]" />
-                        Visual Direction / Color Theme
+                <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                  {FLAVORS.map((flavor, i) => (
+                    <motion.button
+                      key={flavor.en}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.4 }}
+                      onClick={() => handleSelection('flavor', flavor.en)}
+                      className={cn(
+                        "px-8 sm:px-10 py-5 sm:py-6 rounded-full border text-sm sm:text-base font-black tracking-widest transition-all duration-500",
+                        formData.flavor === flavor.en 
+                          ? "bg-gold border-gold text-text-on-gold shadow-[0_0_20px_rgba(212,169,79,0.4)] scale-105" 
+                          : "bg-bg-card/40 backdrop-blur-xl border-gold-border/10 text-text-secondary hover:border-gold/50 hover:text-gold hover:bg-gold/5 hover:-translate-y-1"
+                      )}
+                    >
+                      {isAr ? flavor.ar : flavor.en}
+                    </motion.button>
+                  ))}
+                </div>
+
+                <div className="mt-16 flex justify-center">
+                  <button onClick={prevStep} className="text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold transition-colors flex items-center group">
+                    <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {isAr ? 'العودة' : 'Go Back'}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── STEP 4: DETAILS ── */}
+            {step === 4 && (
+              <motion.div key="step4" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-4xl mx-auto w-full">
+                <div className="text-center mb-10 sm:mb-16">
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
+                    {isAr ? 'اللمسات الأخيرة' : 'The Finishing Touches'}
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
+                    {isAr ? 'تفاصيل تحفتك' : 'Detail your masterpiece.'}
+                  </h2>
+                </div>
+
+                <div className="bg-bg-card/30 backdrop-blur-2xl border border-gold-border/10 rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 shadow-card">
+                  <div className="space-y-8">
+                    {/* Theme */}
+                    <div className="space-y-4">
+                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black block">
+                        {isAr ? 'التوجيه المرئي / الألوان' : 'Visual Direction / Theme'}
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g. Royal Gold and Midnight White, Ombre Blush..."
-                        className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-8 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40"
+                        placeholder={isAr ? 'مثال: ذهبي ملكي، أبيض كلاسيكي...' : 'e.g. Royal Gold and Midnight White...'}
+                        className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40"
                         onChange={(e) => updateForm('colorTheme', e.target.value)}
                         value={formData.colorTheme}
                       />
                     </div>
 
-                    <div className="space-y-6">
-                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,169,79,0.6)]" />
-                        Calligraphy Message
+                    {/* Phone Number */}
+                    <div className="space-y-4">
+                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-2">
+                        {isAr ? 'رقم الهاتف' : 'Phone Number'}
+                        <span className="text-red-500">*</span>
                       </label>
-                      <textarea
-                        placeholder="What should our artists write on the masterpiece?"
-                        className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-8 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40 min-h-[150px] resize-none"
-                        onChange={(e) => updateForm('message', e.target.value)}
-                        value={formData.message}
+                      <input
+                        type="tel"
+                        placeholder={isAr ? 'أدخل رقم هاتفك...' : 'Enter your phone number...'}
+                        className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40"
+                        onChange={(e) => updateForm('phoneNumber', e.target.value)}
+                        value={formData.phoneNumber}
+                        required
                       />
+                      <p className="text-[10px] text-text-fade tracking-wider">
+                        {isAr ? 'سيتواصل معك متجرنا لتأكيد حجز الكيكة.' : 'Our shop will contact you to confirm the cake booking.'}
+                      </p>
                     </div>
 
-                    <div className="flex gap-6 pt-6">
-                      <button 
-                        onClick={() => setStep(1)}
-                        className="flex-1 h-16 rounded-2xl border border-gold-border/10 text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold hover:border-gold/40 transition-all duration-500 flex items-center justify-center group"
-                      >
-                        <ChevronLeft className="w-4 h-4 mr-3 transition-transform duration-500 group-hover:-translate-x-1" /> Back
-                      </button>
-                      <Button variant="gold" className="flex-[2] h-16 text-[11px] uppercase tracking-[0.3em] font-black shadow-gold group" onClick={() => setStep(3)}>
-                        Final Step <ChevronRight className="w-4 h-4 ml-3 transition-transform duration-500 group-hover:translate-x-1" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
-
-                {step === 3 && (
-                  <motion.div
-                    key="step3"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="space-y-10"
-                  >
-                    <div className="space-y-6">
-                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,169,79,0.6)]" />
-                        Desired Celebration Date
+                    {/* Date */}
+                    <div className="space-y-4">
+                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black block">
+                        {isAr ? 'تاريخ الاستلام المطلوب' : 'Desired Celebration Date'}
                       </label>
                       <div className="relative group">
                         <input
                           type="date"
-                          className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-8 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 cursor-pointer hover:border-gold-border/40 [color-scheme:dark]"
+                          className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 cursor-pointer hover:border-gold-border/40 [color-scheme:dark]"
                           onChange={(e) => updateForm('deliveryDate', e.target.value)}
                           value={formData.deliveryDate}
                         />
                         <Calendar className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-text-fade group-hover:text-gold transition-colors duration-500 pointer-events-none" />
                       </div>
-                      <p className="text-[10px] text-text-fade tracking-wider">Note: Custom cakes require at least 48 hours notice for preparation.</p>
+                      <p className="text-[10px] text-text-fade tracking-wider">
+                        {isAr ? 'ملاحظة: يتطلب ٤٨ ساعة على الأقل.' : 'Note: Requires at least 48 hours notice.'}
+                      </p>
                     </div>
 
-                    <div className="p-8 rounded-3xl bg-gold/5 border border-gold-border/20 space-y-4">
-                      <h4 className="text-[11px] uppercase tracking-[0.2em] text-gold font-black">Summary of Request</h4>
-                      <div className="grid grid-cols-2 gap-y-3 gap-x-8">
-                        <div className="flex justify-between text-[11px] border-b border-gold-border/10 pb-2">
-                          <span className="text-text-fade">Occasion</span>
-                          <span className="text-text-primary font-bold">{formData.occasion || 'Not selected'}</span>
-                        </div>
-                        <div className="flex justify-between text-[11px] border-b border-gold-border/10 pb-2">
-                          <span className="text-text-fade">Size</span>
-                          <span className="text-text-primary font-bold">{formData.size || 'Not selected'}</span>
-                        </div>
-                        <div className="flex justify-between text-[11px] border-b border-gold-border/10 pb-2">
-                          <span className="text-text-fade">Flavor</span>
-                          <span className="text-text-primary font-bold">{formData.flavor || 'Not selected'}</span>
-                        </div>
-                        <div className="flex justify-between text-[11px] border-b border-gold-border/10 pb-2">
-                          <span className="text-text-fade">Date</span>
-                          <span className="text-text-primary font-bold">{formData.deliveryDate || 'Not selected'}</span>
-                        </div>
+                    {/* Message */}
+                    <div className="space-y-4">
+                      <label className="text-[11px] uppercase tracking-[0.2em] text-gold font-black block">
+                        {isAr ? 'رسالة التهنئة' : 'Calligraphy Message (Optional)'}
+                      </label>
+                      <div className="relative">
+                        <textarea
+                          placeholder={isAr ? 'ماذا نكتب على الكيكة؟' : 'What should our artists write?'}
+                          className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-2xl px-6 py-5 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-500 placeholder:text-text-fade hover:border-gold-border/40 min-h-[120px] resize-none"
+                          onChange={(e) => updateForm('message', e.target.value)}
+                          value={formData.message}
+                        />
+                        <Quote className="absolute right-6 top-6 w-5 h-5 text-text-fade/20 pointer-events-none" />
                       </div>
                     </div>
+                  </div>
 
-                    <div className="flex gap-6 pt-6">
-                      <button 
-                        onClick={() => setStep(2)}
-                        className="flex-1 h-16 rounded-2xl border border-gold-border/10 text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold hover:border-gold/40 transition-all duration-500 flex items-center justify-center group"
-                      >
-                        <ChevronLeft className="w-4 h-4 mr-3 transition-transform duration-500 group-hover:-translate-x-1" /> Back
-                      </button>
-                      <Button variant="gold" className="flex-[2] h-16 text-[11px] uppercase tracking-[0.3em] font-black shadow-gold group">
-                        Submit Inquiry <CheckCircle2 className="w-5 h-5 ml-3" />
-                      </Button>
+                  <div className="flex gap-4 sm:gap-6 pt-10">
+                    <button onClick={prevStep} className="flex-1 h-14 sm:h-16 rounded-2xl border border-gold-border/10 text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-black text-text-muted hover:text-gold hover:border-gold/40 transition-all flex items-center justify-center group">
+                      <ChevronLeft className="w-4 h-4 mr-2 rtl:-scale-x-100 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" /> {isAr ? 'رجوع' : 'Back'}
+                    </button>
+                    <Button 
+                      variant="gold" 
+                      onClick={nextStep}
+                      disabled={!formData.deliveryDate || !formData.phoneNumber}
+                      className={cn(
+                        "flex-[2] h-14 sm:h-16 text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-black transition-all group",
+                        formData.deliveryDate && formData.phoneNumber ? "shadow-gold opacity-100" : "opacity-50 grayscale cursor-not-allowed"
+                      )}
+                    >
+                      {isAr ? 'مراجعة التحفة' : 'Review Masterpiece'} <ChevronRight className="w-4 h-4 ml-2 rtl:-scale-x-100 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── STEP 5: SUMMARY ── */}
+            {step === 5 && (
+              <motion.div key="step5" variants={variants} initial="initial" animate="animate" exit="exit" className="max-w-2xl mx-auto w-full">
+                <div className="text-center mb-10 sm:mb-16">
+                  <div className="w-20 h-20 mx-auto bg-gold/10 rounded-full flex items-center justify-center mb-6">
+                    <CheckCircle2 className="w-10 h-10 text-gold" />
+                  </div>
+                  <h2 className="text-3xl sm:text-5xl text-text-primary uppercase tracking-[0.1em] font-display">
+                    {isAr ? 'اكتملت الرؤية' : 'Vision Complete'}
+                  </h2>
+                </div>
+
+                <div className="relative bg-bg-card border border-gold-border/20 rounded-[2rem] p-8 sm:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.4)] overflow-hidden">
+                  {/* Ticket cutouts */}
+                  <div className="absolute top-1/2 -left-4 w-8 h-8 bg-bg-base rounded-full -translate-y-1/2 border-r border-gold-border/20" />
+                  <div className="absolute top-1/2 -right-4 w-8 h-8 bg-bg-base rounded-full -translate-y-1/2 border-l border-gold-border/20" />
+                  <div className="absolute top-1/2 left-8 right-8 border-t border-dashed border-gold-border/20 -translate-y-1/2" />
+
+                  <div className="pb-8 mb-8 relative z-10">
+                    <h3 className="text-[11px] uppercase tracking-[0.4em] text-gold font-black text-center mb-8">
+                      {isAr ? 'مواصفات التحفة' : 'Masterpiece Specifications'}
+                    </h3>
+                    
+                    <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                      <div>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'المناسبة' : 'Occasion'}</p>
+                        <p className="text-sm text-text-primary font-bold">{formData.occasion}</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'الحجم' : 'Size'}</p>
+                        <p className="text-sm text-text-primary font-bold">{formData.size}</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'النكهة' : 'Flavor'}</p>
+                        <p className="text-sm text-text-primary font-bold">{formData.flavor}</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] uppercase tracking-widest text-text-fade mb-1">{isAr ? 'التاريخ' : 'Date'}</p>
+                        <p className="text-sm text-gold font-bold">{formData.deliveryDate}</p>
+                      </div>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                  </div>
 
-            {/* Support info */}
-            <motion.p 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="text-center mt-12 text-[10px] text-text-fade tracking-widest leading-relaxed max-w-2xl mx-auto"
-            >
-              Once submitted, our head pastry chef will review your request and contact you within 4 hours to finalize details and provide a formal quote.
-            </motion.p>
-          </div>
+                  <div className="relative z-10 space-y-6">
+                    <Button variant="gold" className="w-full h-16 text-[18px] uppercase tracking-[0.3em] font-black shadow-[0_0_30px_rgba(212,169,79,0.3)]">
+                      {isAr ? 'إرسال لطهاتنا' : 'Submit to Chefs'}
+                    </Button>
+                    <button onClick={prevStep} className="w-full text-[18px] uppercase tracking-[0.2em] font-black text-text-muted hover:text-gold transition-colors">
+                      {isAr ? 'تعديل المواصفات' : 'Modify Specifications'}
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-center mt-10 text-[10px] text-text-fade tracking-widest leading-relaxed max-w-md mx-auto">
+                  {isAr 
+                    ? 'بمجرد الإرسال، سيتواصل معك كبير طهاتنا لتأكيد التفاصيل.' 
+                    : 'Once submitted, our head chef will contact you to finalize the details.'}
+                </p>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
         </div>
       </div>
-      <Footer />
+      
+      {/* Footer only shows fully when not deep in the form, or we can keep it at bottom */}
+      {step === 0 && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+          <Footer />
+        </motion.div>
+      )}
     </>
   );
 }

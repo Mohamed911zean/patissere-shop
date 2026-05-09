@@ -65,7 +65,6 @@ export function HeroSlider() {
       className="relative w-full overflow-hidden"
       // 100svh respects mobile browser chrome (address bar) correctly
       style={{ height: '100svh', minHeight: '560px' }}
-      dir={isAr ? 'rtl' : 'ltr'}
     >
       {/* ── SWIPER ── */}
       <Swiper
@@ -117,6 +116,7 @@ export function HeroSlider() {
         className="absolute inset-0 z-10 flex flex-col justify-end pointer-events-none"
         // Respect iOS home indicator / Android nav bar
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 0px)' }}
+        dir={isAr ? 'rtl' : 'ltr'}
       >
         <div className="w-full px-5 sm:px-8 md:px-12 pb-20 sm:pb-24 md:pb-32">
           <AnimatePresence mode="wait">

@@ -10,23 +10,35 @@ import { Heart, Search, SlidersHorizontal, X, ChevronDown, ShoppingBag, Check } 
 import { cn } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 const CATEGORIES = [
-  'All', 'Cakes', 'Pastries', 'Ice Cream', 'Chocolates', 'Seasonal', 'Heat & Eat', 'Special Cakes'
+  { en: 'All', ar: 'الكل' },
+  { en: 'Cakes', ar: 'كيك' },
+  { en: 'Pastries', ar: 'مخبوزات' },
+  { en: 'Ice Cream', ar: 'آيس كريم' },
+  { en: 'Chocolates', ar: 'شوكولاتة' },
+  { en: 'Seasonal', ar: 'موسمي' },
+  { en: 'Heat & Eat', ar: 'سخن وكل' },
+  { en: 'Special Cakes', ar: 'كيكات خاصة' }
 ];
 
 const PRODUCTS = [
-  { id: 1, name: 'Lotus Cake', category: 'Cakes', price: 450, image: '/cake/lotus.jpg', isNew: true },
-  { id: 2, name: 'Mango Cake', category: 'Cakes', price: 480, image: '/cake/mango.jpg' },
-  { id: 3, name: 'Nutella Cake', category: 'Cakes', price: 500, image: '/cake/nutella.jpg' },
-  { id: 4, name: 'Strawberry Vadge', category: 'Pastries', price: 350, image: '/cake/strawberry-vadge.jpg' },
-  { id: 5, name: 'Forest Berry Cake', category: 'Cakes', price: 460, image: '/cake/forest.jpg' },
-  { id: 6, name: 'Royal Chocolate', category: 'Chocolates', price: 550, image: '/cake/royal-cake.png', isNew: true },
-  { id: 7, name: 'Honey Soggy', category: 'Pastries', price: 280, image: '/soggy/honey-soggy.jpg' },
-  { id: 8, name: 'Nutella Soggy', category: 'Pastries', price: 300, image: '/soggy/nutell-soggy.jpg' },
+  { id: 1, nameEn: 'Lotus Cake', nameAr: 'كيكة اللوتس', categoryEn: 'Cakes', categoryAr: 'كيك', price: 450, image: '/cake/lotus.jpg', isNew: true },
+  { id: 2, nameEn: 'Mango Cake', nameAr: 'كيكة المانجو', categoryEn: 'Cakes', categoryAr: 'كيك', price: 480, image: '/cake/mango.jpg' },
+  { id: 3, nameEn: 'Nutella Cake', nameAr: 'كيكة النوتيلا', categoryEn: 'Cakes', categoryAr: 'كيك', price: 500, image: '/cake/nutella.jpg' },
+  { id: 4, nameEn: 'Strawberry Vadge', nameAr: 'فادج الفراولة', categoryEn: 'Pastries', categoryAr: 'مخبوزات', price: 350, image: '/cake/strawberry-vadge.jpg' },
+  { id: 5, nameEn: 'Forest Berry Cake', nameAr: 'كيكة التوت البري', categoryEn: 'Cakes', categoryAr: 'كيك', price: 460, image: '/cake/forest.jpg' },
+  { id: 6, nameEn: 'Royal Chocolate', nameAr: 'شوكولاتة رويال', categoryEn: 'Chocolates', categoryAr: 'شوكولاتة', price: 550, image: '/cake/royal-cake.png', isNew: true },
+  { id: 7, nameEn: 'Honey Soggy', nameAr: 'فطير بالعسل', categoryEn: 'Pastries', categoryAr: 'مخبوزات', price: 280, image: '/soggy/honey-soggy.jpg' },
+  { id: 8, nameEn: 'Nutella Soggy', nameAr: 'فطير بالنوتيلا', categoryEn: 'Pastries', categoryAr: 'مخبوزات', price: 300, image: '/soggy/nutell-soggy.jpg' },
 ];
 
 export default function ShopPage() {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const { language } = useLanguage();
+  const isAr = language === 'ar';
+
+  const [activeCategoryEn, setActiveCategoryEn] = useState('All');
   const [priceRange, setPriceRange] = useState(1000);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -36,9 +48,9 @@ export default function ShopPage() {
   const { addItem } = useCart();
 
   const filteredProducts = PRODUCTS.filter(p =>
-    (activeCategory === 'All' || p.category === activeCategory) &&
+    (activeCategoryEn === 'All' || p.categoryEn === activeCategoryEn) &&
     p.price <= priceRange &&
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+    (isAr ? p.nameAr.toLowerCase().includes(searchQuery.toLowerCase()) : p.nameEn.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const toggleWishlist = (id: number, e: React.MouseEvent) => {
@@ -50,7 +62,7 @@ export default function ShopPage() {
     e.preventDefault();
     e.stopPropagation();
     if (addedMap[product.id]) return;
-    addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+    addItem({ id: product.id, name: isAr ? product.nameAr : product.nameEn, price: product.price, image: product.image });
     setAddedMap(prev => ({ ...prev, [product.id]: true }));
     setTimeout(() => setAddedMap(prev => ({ ...prev, [product.id]: false })), 2000);
   };
@@ -69,10 +81,14 @@ export default function ShopPage() {
           <div className="container relative z-10 text-center">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
               <nav className="text-[10px] uppercase tracking-[0.4em] text-gold mb-5">
-                Home <span className="mx-3 opacity-30 text-text-primary">/</span> Shop
+                {isAr ? 'الرئيسية' : 'Home'} <span className="mx-3 opacity-30 text-text-primary">/</span> {isAr ? 'المتجر' : 'Shop'}
               </nav>
               <h1 className="text-h1 text-text-primary uppercase tracking-[0.2em] font-display mb-4">
-                The <span className="text-gold">Collection</span>
+                {isAr ? (
+                  <>التشكيلة <span className="text-gold">الكاملة</span></>
+                ) : (
+                  <>The <span className="text-gold">Collection</span></>
+                )}
               </h1>
               <div className="w-24 h-[1px] bg-gold/30 mx-auto mt-6" />
             </motion.div>
@@ -84,16 +100,16 @@ export default function ShopPage() {
           <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
             {CATEGORIES.map(cat => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
+                key={cat.en}
+                onClick={() => setActiveCategoryEn(cat.en)}
                 className={cn(
                   "flex-none text-[11px] uppercase tracking-[0.15em] px-4 py-2 rounded-full border transition-all duration-300 whitespace-nowrap",
-                  activeCategory === cat
+                  activeCategoryEn === cat.en
                     ? "bg-gold text-text-on-gold border-gold shadow-[0_0_16px_rgba(212,169,79,0.3)]"
                     : "bg-transparent text-text-secondary border-gold-border/20 hover:border-gold/40 hover:text-gold"
                 )}
               >
-                {cat}
+                {isAr ? cat.ar : cat.en}
               </button>
             ))}
           </div>
@@ -104,7 +120,7 @@ export default function ShopPage() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder={isAr ? 'بحث...' : 'Search...'}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="w-full bg-bg-card/50 backdrop-blur-md border border-gold-border/20 rounded-xl px-5 py-3 text-sm text-text-primary focus:outline-none focus:border-gold/50 transition-all duration-300 placeholder:text-text-fade pr-10"
@@ -116,7 +132,7 @@ export default function ShopPage() {
             className="flex items-center gap-2 px-4 py-3 rounded-xl bg-bg-card/50 border border-gold-border/20 text-text-secondary hover:border-gold/40 hover:text-gold transition-all duration-300"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            <span className="text-[11px] uppercase tracking-widest">Filter</span>
+            <span className="text-[11px] uppercase tracking-widest">{isAr ? 'تصفية' : 'Filter'}</span>
           </button>
         </div>
 
@@ -152,10 +168,10 @@ export default function ShopPage() {
               </div>
 
               <button
-                onClick={() => { setActiveCategory('All'); setPriceRange(1000); setSearchQuery(''); setMobileFiltersOpen(false); }}
+                onClick={() => { setActiveCategoryEn('All'); setPriceRange(1000); setSearchQuery(''); setMobileFiltersOpen(false); }}
                 className="w-full py-4 text-[10px] uppercase tracking-[0.2em] text-text-muted border border-gold-border/10 rounded-xl hover:bg-gold/5 hover:border-gold-border/30 hover:text-gold transition-all duration-500"
               >
-                Reset All
+                {isAr ? 'إعادة ضبط' : 'Reset All'}
               </button>
             </motion.div>
           </div>
@@ -182,24 +198,24 @@ export default function ShopPage() {
 
               {/* Categories */}
               <div className="space-y-6">
-                <h4 className="text-[11px] uppercase tracking-[0.2em] text-gold font-black">Categories</h4>
+                <h4 className="text-[11px] uppercase tracking-[0.2em] text-gold font-black">{isAr ? 'الفئات' : 'Categories'}</h4>
                 <ul className="space-y-4">
                   {CATEGORIES.map(cat => (
-                    <li key={cat}>
+                    <li key={cat.en}>
                       <button
-                        onClick={() => setActiveCategory(cat)}
+                        onClick={() => setActiveCategoryEn(cat.en)}
                         className={cn(
                           "text-sm tracking-wide transition-all duration-500 flex items-center gap-3 group",
-                          activeCategory === cat ? "text-gold translate-x-2" : "text-text-secondary hover:text-gold hover:translate-x-1"
+                          activeCategoryEn === cat.en ? "text-gold translate-x-2" : "text-text-secondary hover:text-gold hover:translate-x-1"
                         )}
                       >
                         <span className={cn(
                           "w-1.5 h-1.5 rounded-full transition-all duration-500",
-                          activeCategory === cat
+                          activeCategoryEn === cat.en
                             ? "bg-gold scale-100 shadow-[0_0_8px_rgba(212,169,79,0.6)]"
                             : "bg-gold-border/20 scale-50 opacity-0 group-hover:opacity-100 group-hover:scale-100"
                         )} />
-                        {cat}
+                        {isAr ? cat.ar : cat.en}
                       </button>
                     </li>
                   ))}
@@ -222,10 +238,10 @@ export default function ShopPage() {
               </div>
 
               <button
-                onClick={() => { setActiveCategory('All'); setPriceRange(1000); setSearchQuery(''); }}
+                onClick={() => { setActiveCategoryEn('All'); setPriceRange(1000); setSearchQuery(''); }}
                 className="w-full py-4 text-[10px] uppercase tracking-[0.2em] text-text-muted border border-gold-border/10 rounded-xl hover:bg-gold/5 hover:border-gold-border/30 hover:text-gold transition-all duration-500"
               >
-                Reset Selection
+                {isAr ? 'إعادة ضبط' : 'Reset Selection'}
               </button>
             </aside>
 
@@ -265,7 +281,7 @@ export default function ShopPage() {
                           <div className="relative aspect-[3/4] sm:aspect-[4/5] overflow-hidden">
                             <Image
                               src={product.image}
-                              alt={product.name}
+                              alt={isAr ? product.nameAr : product.nameEn}
                               fill
                               className="object-cover transition-transform duration-1000 group-hover:scale-110"
                               sizes="(max-width: 640px) 50vw, (max-width: 1280px) 50vw, 33vw"
@@ -275,7 +291,7 @@ export default function ShopPage() {
                             {/* Category badge */}
                             <div className="absolute top-2.5 left-2.5 sm:top-5 sm:left-5">
                               <span className="bg-bg-base/70 backdrop-blur-md text-gold text-[8px] sm:text-[9px] font-black px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full uppercase tracking-[0.15em] sm:tracking-[0.2em] border border-gold-border/20">
-                                {product.category}
+                                {isAr ? product.categoryAr : product.categoryEn}
                               </span>
                             </div>
 
@@ -332,21 +348,21 @@ export default function ShopPage() {
                           {/* Card Info */}
                           <div className="p-3 sm:p-6">
                             <h3 className="text-sm sm:text-xl font-display text-text-primary mb-0.5 sm:mb-2 group-hover:text-gold transition-colors duration-300 leading-tight line-clamp-1">
-                              {product.name}
+                              {isAr ? product.nameAr : product.nameEn}
                             </h3>
 
                             {/* Description — hidden on mobile for space */}
                             <p className="hidden sm:block text-xs text-text-muted mb-5 tracking-wide line-clamp-1">
-                              Handcrafted excellence using premium ingredients.
+                              {isAr ? 'تميز مصنوع يدوياً بأجود المكونات.' : 'Handcrafted excellence using premium ingredients.'}
                             </p>
 
                             <div className="flex items-center justify-between mt-1 sm:mt-0">
-                              <span className="text-sm sm:text-lg font-display text-gold tracking-wide">{product.price} <span className="text-[10px] sm:text-xs text-gold/70">EGP</span></span>
+                              <span className="text-sm sm:text-lg font-display text-gold tracking-wide">{product.price} <span className="text-[10px] sm:text-xs text-gold/70">{isAr ? 'ج.م' : 'EGP'}</span></span>
 
                               {/* Mobile: tap to add button */}
                               <button
                                 onClick={(e) => handleQuickAdd(e, product)}
-                                aria-label={`Add ${product.name} to cart`}
+                                aria-label={`Add ${product.nameEn} to cart`}
                                 className={cn(
                                   'sm:hidden flex items-center justify-center w-8 h-8 rounded-full border transition-all duration-300 active:scale-90',
                                   addedMap[product.id]

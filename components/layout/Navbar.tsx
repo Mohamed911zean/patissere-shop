@@ -111,6 +111,12 @@ export function Navbar() {
 
           {/* RIGHT: Actions */}
           <div className="flex-1 flex justify-end items-center gap-4 sm:gap-6">
+            <button
+              onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+              className={cn("text-xs font-black uppercase tracking-widest transition-colors", iconColor)}
+            >
+              {currentLang === 'en' ? 'AR' : 'EN'}
+            </button>
             <button className={cn("hidden sm:block transition-colors", iconColor)}>
               <User strokeWidth={1.5} className="w-5 h-5" />
             </button>

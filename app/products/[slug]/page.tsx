@@ -487,7 +487,7 @@ export default function ProductDetailPage() {
               <p className="text-[10px] uppercase tracking-[0.25em] text-gold/55 font-black mb-3">
                 Select Size
               </p>
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {PRODUCT.variants.map((v, i) => (
                   <button
                     key={i}

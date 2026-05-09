@@ -157,19 +157,45 @@ export function Footer() {
           </div>
         </div>
 
-        <div className={`pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 ${isAr ? 'md:flex-row-reverse text-center md:text-right' : 'text-center md:text-left'}`}>
-          <p className="text-text-fade text-[11px] font-medium tracking-wider uppercase">
-            © 2026 Lenza Sweets · {isAr ? 'جميع الحقوق محفوظة' : 'El Ramlawy Food. All rights reserved.'}
-          </p>
-          <div className="flex gap-8">
-            <Link href="/privacy-policy" className="text-text-fade hover:text-gold transition-colors text-[11px] font-bold uppercase tracking-widest">
-              {isAr ? 'الخصوصية' : 'Privacy'}
-            </Link>
-            <Link href="/terms" className="text-text-fade hover:text-gold transition-colors text-[11px] font-bold uppercase tracking-widest">
-              {isAr ? 'الشروط' : 'Terms'}
-            </Link>
-          </div>
-        </div>
+       <div
+  className={`pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 ${
+    isAr
+      ? "md:flex-row-reverse text-center md:text-right"
+      : "text-center md:text-left"
+  }`}
+>
+  <p className="text-text-fade text-[11px] font-medium tracking-wider uppercase flex items-center gap-2 flex-wrap justify-center">
+    © 2026 Lenza Sweets ·{" "}
+    {isAr ? "جميع الحقوق محفوظة" : "All Rights Reserved"}
+
+    <span className="text-white/20">|</span>
+
+    <a
+      href="https://reactech.vercel.app"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gold hover:text-white transition-all duration-300 font-bold tracking-[0.2em]"
+    >
+      MADE BY REACTECH
+    </a>
+  </p>
+
+  <div className="flex gap-8">
+    <Link
+      href="/privacy-policy"
+      className="text-text-fade hover:text-gold transition-colors text-[11px] font-bold uppercase tracking-widest"
+    >
+      {isAr ? "الخصوصية" : "Privacy"}
+    </Link>
+
+    <Link
+      href="/terms"
+      className="text-text-fade hover:text-gold transition-colors text-[11px] font-bold uppercase tracking-widest"
+    >
+      {isAr ? "الشروط" : "Terms"}
+    </Link>
+  </div>
+</div>
       </div>
     </footer>
   );

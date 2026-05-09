@@ -284,7 +284,9 @@ export function CartDrawer() {
 
                   {/* CTAs */}
                   <div className="px-5 pb-5 pt-2 space-y-2.5">
-                    <button
+                    <Link
+                      href="/checkout"
+                      onClick={() => setIsCartOpen(false)}
                       className={cn(
                         'w-full h-14 rounded-2xl',
                         'text-[11px] font-black uppercase tracking-[0.22em]',
@@ -302,7 +304,7 @@ export function CartDrawer() {
                       <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                       {isAr ? 'إتمام الطلب' : 'Proceed to Checkout'}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                    </button>
+                    </Link>
 
                     <button
                       onClick={() => setIsCartOpen(false)}

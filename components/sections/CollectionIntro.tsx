@@ -58,7 +58,7 @@ const PRODUCTS = [
   },
   {
     id: 5,
-    nameEn: 'Honey Soggy',     nameAr: 'سوجي بالعسل',
+    nameEn: 'Honey Soggy',     nameAr: 'فطير بالعسل',
     category: 'Soggy',
     priceEn: '280 EGP',        priceAr: '٢٨٠ ج.م',
     price: 280,
@@ -85,7 +85,7 @@ const PRODUCTS = [
   },
   {
     id: 8,
-    nameEn: 'Nutella Soggy',   nameAr: 'سوجي بالنوتيلا',
+    nameEn: 'Nutella Soggy',   nameAr: 'فطير بالنوتيلا',
     category: 'Soggy',
     priceEn: '300 EGP',        priceAr: '٣٠٠ ج.م',
     price: 300,
@@ -166,11 +166,9 @@ export function CollectionIntro() {
         </div>
 
         {/* ── Category chips — scrollable row, no wrap ── */}
-        <style>{`.cat-scroll::-webkit-scrollbar{display:none}`}</style>
         <div
           ref={scrollRef}
           className="cat-scroll flex items-center gap-5 mb-10 sm:mb-14 overflow-x-auto sm:justify-center sm:flex-wrap"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {/* Edge padding so first/last chip isn't flush on mobile */}
           <span className="shrink-0 w-1 sm:hidden" />
