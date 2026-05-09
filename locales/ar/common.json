@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "shop": "المتجر",
+    "specialCakes": "كيكات خاصة",
+    "about": "من نحن",
+    "branches": "فروعنا",
+    "faqs": "الأسئلة الشائعة",
+    "contactUs": "اتصل بنا"
+  },
+  "common": {
+    "deliveryTo": "التوصيل إلى",
+    "selectLocation": "اختر الموقع",
+    "freeDelivery": "توصيل مجاني للطلبات فوق ٥٠٠ جنيه",
+    "cart": "عربة التسوق",
+    "emptyCart": "عربة التسوق فارغة",
+    "checkout": "إتمام الطلب",
+    "search": "بحث...",
+    "new": "جديد",
+    "viewAll": "عرض الكل",
+    "explore": "استكشف",
+    "tryItNow": "جربها الآن"
+  }
+}

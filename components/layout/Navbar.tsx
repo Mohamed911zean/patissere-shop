@@ -14,12 +14,12 @@ import { useLocation } from '@/context/LocationContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/shop', label: 'Shop' },
-  { href: '/special-cakes', label: 'Special Cakes' },
-  { href: '/about', label: 'Our Story' },
-  { href: '/branches', label: 'Locations' },
-  { href: '/contact-us', label: 'Contact' },
+  { href: '/', label: 'nav.home', defaultText: 'Home' },
+  { href: '/shop', label: 'nav.shop', defaultText: 'Shop' },
+  { href: '/special-cakes', label: 'nav.specialCakes', defaultText: 'Special Cakes' },
+  { href: '/about', label: 'nav.about', defaultText: 'Our Story' },
+  { href: '/branches', label: 'nav.branches', defaultText: 'Locations' },
+  { href: '/contact-us', label: 'nav.contactUs', defaultText: 'Contact' },
 ];
 
 export function Navbar() {
@@ -78,7 +78,7 @@ export function Navbar() {
                 <span className={cn("block h-[2px] w-1/2 transition-all group-hover:w-3/4", burgerLineColor)} />
               </div>
               <span className={cn("hidden sm:block text-xs font-bold uppercase tracking-[0.2em]", textColor)}>
-                {mounted ? t('menu') : 'Menu'}
+                {mounted ? t('common.menu', { defaultValue: 'Menu' }) : 'Menu'}
               </span>
             </button>
           </div>
@@ -177,7 +177,7 @@ export function Navbar() {
                       )}
                     >
                       <span className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-black">
-                        {mounted ? t(link.label) : link.label}
+                        {mounted ? t(link.label, { defaultValue: link.defaultText }) : link.defaultText}
                       </span>
                       {pathname === link.href && (
                         <motion.span
@@ -200,14 +200,14 @@ export function Navbar() {
                 {/* Location */}
                 <div className="mb-10">
                   <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-black/40 mb-4">
-                    Delivery To
+                    {mounted ? t('common.deliveryTo', { defaultValue: 'Delivery To' }) : 'Delivery To'}
                   </h4>
                   <button
                     onClick={() => { setIsMenuOpen(false); setIsModalOpen(true); }}
                     className="flex items-center gap-3 text-lg font-medium text-black hover:text-yellow-600 transition-colors"
                   >
                     <MapPin className="w-5 h-5 text-yellow-600 shrink-0" />
-                    {mounted && city ? `${city}, ${area}` : t('selectLocation')}
+                    {mounted && city ? `${city}, ${area}` : t('common.selectLocation', { defaultValue: 'Select Location' })}
                   </button>
                 </div>
 

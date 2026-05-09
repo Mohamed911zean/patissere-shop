@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "specialCakes": "Special Cakes",
+    "about": "About",
+    "branches": "Branches",
+    "faqs": "FAQs",
+    "contactUs": "Contact Us"
+  },
+  "common": {
+    "deliveryTo": "Delivery to",
+    "selectLocation": "Select Location",
+    "freeDelivery": "Free delivery on orders above 500 EGP",
+    "cart": "Cart",
+    "emptyCart": "Your cart is empty",
+    "checkout": "Checkout",
+    "search": "Search...",
+    "new": "New",
+    "viewAll": "View All",
+    "explore": "Explore",
+    "tryItNow": "Try It Now"
+  }
+}
