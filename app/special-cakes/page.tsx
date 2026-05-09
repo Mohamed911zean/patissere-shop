@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Footer } from '@/components/layout/Footer';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { CheckCircle2, ChevronRight, ChevronLeft, Calendar, Wand2, Sparkles, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
@@ -71,7 +71,7 @@ export default function SpecialCakesPage() {
     router.push('/');
   };
 
-  const variants = {
+  const variants: Variants = {
     initial: { opacity: 0, y: 40, filter: 'blur(10px)' },
     animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: 'easeOut' } },
     exit: { opacity: 0, y: -40, filter: 'blur(10px)', transition: { duration: 0.5, ease: 'easeIn' } }
