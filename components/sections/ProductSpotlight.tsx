@@ -95,7 +95,7 @@ export function ProductSpotlight() {
       <textPath
         href="#circlePath"
         startOffset={t('sections.0')}
-        textAnchor={t('sections.middle')}
+        textAnchor="middle"
         direction={isAr ? "rtl" : "ltr"}
       >
         {t('sections.simply_irresistible_simply')}

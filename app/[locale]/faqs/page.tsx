@@ -1,5 +1,4 @@
 'use client';
-import { useTranslation } from 'react-i18next';
 
 import React, { useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
@@ -60,11 +59,12 @@ const FAQS = [
 ];
 
 function FAQItem({
-  questionEn, questionAr, answerEn, answerAr, isOpen, onClick, isAr
+  questionEn, questionAr, answerEn, answerAr, isOpen, onClick, isAr, textAlignClass,
 }: {
   questionEn: string; questionAr: string;
   answerEn: string; answerAr: string;
   isOpen: boolean; onClick: () => void; isAr: boolean;
+  textAlignClass: string;
 }) {
   return (
     <div className="border-b border-gold-border/10 last:border-0">
@@ -96,7 +96,7 @@ function FAQItem({
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <div className={`pb-8 text-text-muted leading-relaxed tracking-wide text-sm max-w-2xl ${t('sections.pl_2')}`}>
+            <div className={`pb-8 text-text-muted leading-relaxed tracking-wide text-sm max-w-2xl ${textAlignClass}`}>
               {isAr ? answerAr : answerEn}
             </div>
           </motion.div>
@@ -110,6 +110,9 @@ export default function FAQsPage() {
   const { language, t } = useLanguage();
   const isAr = language === 'ar';
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  // Resolve the padding class here where t() is in scope
+  const answerPaddingClass = t('sections.pl_2');
 
   return (
     <>
@@ -150,6 +153,7 @@ export default function FAQsPage() {
                   isOpen={openIndex === index}
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                   isAr={isAr}
+                  textAlignClass={answerPaddingClass}
                 />
               ))}
             </motion.div>
