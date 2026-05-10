@@ -61,10 +61,11 @@ export function HeroSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<any>(null);
 
+  const slide = SLIDES[activeIndex];
+
   return (
     <section
       className="relative w-full overflow-hidden"
-      // 100svh respects mobile browser chrome (address bar) correctly
       style={{ height: '100svh', minHeight: '560px' }}
     >
       {/* ── SWIPER ── */}
@@ -74,12 +75,12 @@ export function HeroSlider() {
         effect="fade"
         fadeEffect={{ crossFade: true }}
         speed={1800}
-        autoplay={{ delay: 1800, disableOnInteraction: false, pauseOnMouseEnter: true }}
+        autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
         loop
         onSlideChange={(s) => setActiveIndex(s.realIndex)}
         className="absolute inset-0 w-full h-full"
       >
-        {SLIDES.map((slide, index) => (
+        {SLIDES.map((s, index) => (
           <SwiperSlide key={index}>
             {({ isActive }) => (
               <div className="relative w-full h-full overflow-hidden">
@@ -91,11 +92,10 @@ export function HeroSlider() {
                   }}
                 >
                   <Image
-                    src={slide.image}
-                    alt={isAr ? slide.titleAr : slide.titleEn}
+                    src={s.image}
+                    alt={isAr ? s.titleAr : s.titleEn}
                     fill
                     className="object-cover object-center"
-                    // On mobile, focal point matters — shift to top on portrait
                     style={{ objectPosition: 'center 30%' }}
                     priority={index === 0}
                     loading={index === 0 ? 'eager' : 'lazy'}
@@ -103,7 +103,7 @@ export function HeroSlider() {
                     quality={90}
                   />
                 </div>
-                {/* Layered overlays — heavier at bottom for text legibility on mobile */}
+                {/* Overlays live inside each slide — never unmounted on lang switch */}
                 <div className="absolute inset-0 bg-black/30" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/25" />
               </div>
@@ -112,37 +112,39 @@ export function HeroSlider() {
         ))}
       </Swiper>
 
-      {/* ── CONTENT ── */}
+      {/* ── CONTENT ──
+          Key is ONLY activeIndex — language changes don't retrigger the exit animation.
+          Text inside updates instantly via isAr without any unmount/remount.
+      ── */}
       <div
         className="absolute inset-0 z-10 flex flex-col justify-end pointer-events-none"
-        // Respect iOS home indicator / Android nav bar
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 0px)' }}
         dir={isAr ? 'rtl' : 'ltr'}
       >
         <div className="w-full px-5 sm:px-8 md:px-12 pb-20 sm:pb-24 md:pb-32">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeIndex}
+              key={activeIndex} // ← only slide index, NOT language
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -14 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className={`w-full ${t('sections.')}`}
+              className="w-full"
             >
-              {/* Label with decorative line */}
+              {/* Label */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
-                className={`flex items-center gap-3 mb-3 sm:mb-4 ${t('sections.')}`}
+                className="flex items-center gap-3 mb-3 sm:mb-4"
               >
                 <span className="block w-4 h-[1px] bg-yellow-400/70 shrink-0" />
                 <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.28em] text-yellow-400/90">
-                  {isAr ? SLIDES[activeIndex].labelAr : SLIDES[activeIndex].labelEn}
+                  {isAr ? slide.labelAr : slide.labelEn}
                 </span>
               </motion.div>
 
-              {/* Title — fluid size, safe on all screens */}
+              {/* Title */}
               <motion.h1
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -150,38 +152,33 @@ export function HeroSlider() {
                 className="text-white font-extralight leading-[1.06] tracking-tight whitespace-pre-line mb-6 sm:mb-8"
                 style={{ fontSize: 'clamp(2.2rem, 9vw, 5.5rem)' }}
               >
-                {isAr ? SLIDES[activeIndex].titleAr : SLIDES[activeIndex].titleEn}
+                {isAr ? slide.titleAr : slide.titleEn}
               </motion.h1>
 
-              {/* CTAs — stacked on mobile, row on sm+ */}
+              {/* CTAs */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35, duration: 0.55 }}
-                className={`
-                  pointer-events-auto
-                  flex flex-col sm:flex-row gap-3
-                  ${t('sections.items_stretch_sm_items_center')}
-                `}
+                className="pointer-events-auto flex flex-col sm:flex-row gap-3 items-stretch sm:items-center"
               >
-                <Link href={SLIDES[activeIndex].href} className="w-full sm:w-auto">
-                  {/* min-h-[44px] = Apple's minimum touch target */}
+                <Link href={slide.href} className="w-full sm:w-auto">
                   <Button
                     variant="gold"
                     size="lg"
                     className="w-full sm:w-auto min-h-[44px] text-sm sm:text-base"
                   >
-                    {isAr ? SLIDES[activeIndex].ctaAr : SLIDES[activeIndex].ctaEn}
+                    {isAr ? slide.ctaAr : slide.ctaEn}
                   </Button>
                 </Link>
 
-                <Link href={SLIDES[activeIndex].secondaryHref} className="w-full sm:w-auto">
+                <Link href={slide.secondaryHref} className="w-full sm:w-auto">
                   <Button
                     variant="outline"
                     size="lg"
                     className="w-full sm:w-auto min-h-[38px] text-sm sm:text-base border-white/30 text-white hover:bg-white/10"
                   >
-                    {isAr ? SLIDES[activeIndex].secondaryCtaAr : SLIDES[activeIndex].secondaryCtaEn}
+                    {isAr ? slide.secondaryCtaAr : slide.secondaryCtaEn}
                   </Button>
                 </Link>
               </motion.div>
@@ -190,19 +187,19 @@ export function HeroSlider() {
         </div>
       </div>
 
-      {/* ── BOTTOM BAR: dots left, counter right ── */}
+      {/* ── BOTTOM BAR ── */}
       <div
         className="absolute bottom-0 left-0 right-0 z-20 flex items-end justify-between px-5 sm:px-8 md:px-12"
         style={{ paddingBottom: 'max(calc(env(safe-area-inset-bottom) + 14px), 14px)' }}
+        dir={isAr ? 'rtl' : 'ltr'}
       >
         {/* Pill dots */}
-        <div className={`flex items-center gap-2 ${t('sections.order_1')}`}>
+        <div className="flex items-center gap-2">
           {SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => swiperRef.current?.slideToLoop(i)}
               aria-label={`Slide ${i + 1}`}
-              // 44px touch area via padding
               className="py-3 flex items-center"
             >
               <span
@@ -220,7 +217,7 @@ export function HeroSlider() {
         </div>
 
         {/* Counter */}
-        <div className={`flex items-center gap-2 pb-3 ${t('sections.order_2')}`}>
+        <div className="flex items-center gap-2 pb-3">
           <span className="text-white text-xs font-light tabular-nums">
             {String(activeIndex + 1).padStart(2, '0')}
           </span>
