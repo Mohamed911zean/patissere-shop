@@ -247,7 +247,7 @@ export function Navbar() {
                             : "bg-transparent border border-black/20 text-black hover:bg-black/5"
                         )}
                       >
-                        {lang === 'en' ? 'English' : 'العربية'}
+                        {lang === 'ar' ? 'English' : 'العربية'}
                       </button>
                     ))}
                   </div>
