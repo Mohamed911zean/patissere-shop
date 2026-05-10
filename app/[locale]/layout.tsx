@@ -41,14 +41,16 @@ export const viewport: Viewport = {
   themeColor: "#0b0501",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-  params: { locale }
+  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
+
   return (
     <html lang={locale} dir={dir} className={`${jost.variable} ${cormorant.variable} ${greatVibes.variable}`}>
       <body className="antialiased bg-bg-base text-text-primary selection:bg-gold/30 selection:text-gold-light">
@@ -61,8 +63,8 @@ export default function RootLayout({
               <main>
                 {children}
               </main>
-              <Toaster 
-                position="bottom-center" 
+              <Toaster
+                position="bottom-center"
                 toastOptions={{
                   style: {
                     background: '#0b0501',
