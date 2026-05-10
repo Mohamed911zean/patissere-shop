@@ -104,7 +104,6 @@ export function ProductSpotlight() {
   </svg>
 </div>
 
-            {/* صورة الكيكة (يُفضل استخدام صورة شفافة PNG) */}
            {/* صورة الكيكة (يُفضل استخدام صورة شفافة PNG) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8, rotate: -5 }}

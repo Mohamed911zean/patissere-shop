@@ -216,28 +216,6 @@ export function HeroSlider() {
           ))}
         </div>
 
-        {/* Counter */}
-        <div className="flex items-center gap-2 pb-3">
-          <span className="text-white text-xs font-light tabular-nums">
-            {String(activeIndex + 1).padStart(2, '0')}
-          </span>
-          <span className="w-5 h-[1px] bg-white/30" />
-          <span className="text-white/40 text-xs font-light tabular-nums">
-            {String(SLIDES.length).padStart(2, '0')}
-          </span>
-        </div>
-      </div>
-
-      {/* ── SCROLL HINT — desktop only ── */}
-      <div className="hidden md:flex absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-2 opacity-40">
-        <div className="w-[1px] h-12 bg-white/50 relative overflow-hidden">
-          <motion.div
-            className="absolute top-0 left-0 w-full bg-white"
-            animate={{ y: ['0%', '100%'] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ height: '40%' }}
-          />
-        </div>
       </div>
     </section>
   );
